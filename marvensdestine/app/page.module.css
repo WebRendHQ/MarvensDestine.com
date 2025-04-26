@@ -37,6 +37,14 @@
   overflow: hidden;
 }
 
+/* Scenes container for managing multiple Spline backgrounds */
+.scenesContainer {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
 /* Style for the background viewer that holds the Spline component */
 .backgroundViewer {
   position: absolute;
@@ -44,7 +52,164 @@
   left: 0;
   width: 100%;
   height: 100%;
-  z-index: -1;
+  transition: opacity 0.8s ease-in-out;
+  z-index: 0;
+}
+
+/* Active scene styling */
+.activeScene {
+  z-index: 1;
+}
+
+/* Transitioning state for animations */
+.transitioning {
+  pointer-events: none;
+}
+
+/* Content container in the bottom left */
+.contentContainer {
+  position: absolute;
+  bottom: 120px; /* Positioned above the controls */
+  left: 0;
+  width: 100%;
+  z-index: 10;
+  padding: 0 10%;
+}
+
+/* Individual content section */
+.contentSection {
+  max-width: 500px;
+  transition: opacity 0.8s ease-in-out;
+}
+
+/* Description text styling */
+.description {
+  font-size: 16px;
+  line-height: 1.5;
+  margin-bottom: 12px;
+  color: rgba(255, 255, 255, 0.8);
+  font-weight: 400;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* Title styling */
+.title {
+  font-size: 48px;
+  line-height: 1.1;
+  font-weight: 700;
+  color: white;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  margin-bottom: 8px;
+}
+
+/* Container for controls that spans 80% of viewport width */
+.controlsContainer {
+  position: absolute;
+  bottom: 40px;
+  left: 0;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 10;
+}
+
+/* Navigation controls layout */
+.controls {
+  width: 80%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* Navigation buttons */
+.navButton {
+  background: rgba(255, 255, 255, 0.2);
+  border: none;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 18px;
+  color: white;
+  backdrop-filter: blur(5px);
+  transition: background 0.3s ease, transform 0.2s ease;
+}
+
+.navButton:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: scale(1.05);
+}
+
+/* Scene indicators */
+.indicators {
+  display: flex;
+  gap: 10px;
+}
+
+.indicator {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.3);
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.activeIndicator {
+  background: rgba(255, 255, 255, 0.8);
+  transform: scale(1.2);
+}
+
+/* For dark mode */
+@media (prefers-color-scheme: dark) {
+  .navButton {
+    color: white;
+    background: rgba(255, 255, 255, 0.15);
+  }
+  
+  .navButton:hover {
+    background: rgba(255, 255, 255, 0.25);
+  }
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .controlsContainer {
+    bottom: 20px;
+  }
+  
+  .controls {
+    width: 90%;
+  }
+  
+  .navButton {
+    width: 36px;
+    height: 36px;
+    font-size: 16px;
+  }
+  
+  .indicator {
+    width: 10px;
+    height: 10px;
+  }
+  
+  .contentContainer {
+    bottom: 80px;
+    padding: 0 6%;
+  }
+  
+  .title {
+    font-size: 36px;
+  }
+  
+  .description {
+    font-size: 14px;
+  }
 }
 
 .main {
