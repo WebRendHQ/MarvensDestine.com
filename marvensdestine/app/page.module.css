@@ -35,6 +35,115 @@
   margin: 0;
   padding: 0;
   overflow: hidden;
+  perspective: 1000px;
+}
+
+/* Preloader styles */
+.preloader {
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-color: var(--background);
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1000;
+  font-family: var(--mil-font);
+  color: var(--mil-light);
+  padding: 20px;
+  background-image: 
+    url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23333333' fill-opacity='0.08'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E"),
+    linear-gradient(to bottom, var(--background), rgba(11, 12, 14, 0.95));
+  perspective: 1000px;
+}
+
+.codeTerminal {
+  width: 90%;
+  max-width: 700px;
+  height: 350px;
+  overflow-y: auto;
+  background-color: var(--mil-dark);
+  border: 1px solid var(--mil-border-highlight);
+  border-radius: 0;
+  padding: 20px;
+  margin-bottom: 25px;
+  box-shadow: var(--mil-shadow);
+  position: relative;
+  font-family: 'Share Tech Mono', monospace;
+  transform: perspective(1000px) rotateY(-5deg);
+  transform-origin: right center;
+}
+
+.codeTerminal::before {
+  content: "// SECURE MILITARY NETWORK //";
+  position: absolute;
+  top: -25px;
+  left: 0;
+  background-color: var(--mil-medium);
+  color: var(--mil-light);
+  padding: 3px 10px;
+  font-size: 11px;
+  font-weight: 500;
+  border: 1px solid var(--mil-border-highlight);
+  border-bottom: none;
+  letter-spacing: 1px;
+}
+
+.codeLine {
+  margin-bottom: 10px;
+  animation: fadeIn 0.2s ease-in-out;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--mil-accent);
+}
+
+.progressBar {
+  width: 90%;
+  max-width: 700px;
+  height: 20px;
+  background-color: var(--mil-dark);
+  border: 1px solid var(--mil-border-highlight);
+  border-radius: 0;
+  position: relative;
+  overflow: hidden;
+  transform: perspective(1000px) rotateY(-5deg);
+  transform-origin: right center;
+}
+
+.progressFill {
+  height: 100%;
+  background-color: var(--mil-accent);
+  transition: width 0.2s ease-in-out;
+}
+
+.progressText {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--mil-highlight);
+  font-size: 10px;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  font-family: 'Share Tech Mono', monospace;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(3px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
 }
 
 /* Scenes container for managing multiple Spline backgrounds */
@@ -66,149 +175,360 @@
   pointer-events: none;
 }
 
-/* Content container in the bottom left */
-.contentContainer {
+/* Curved FOV container for all UI elements */
+.curvedFOVContainer {
   position: absolute;
-  bottom: 120px; /* Positioned above the controls */
+  top: 0;
   left: 0;
   width: 100%;
+  height: 100%;
+  perspective: 1200px;
+  perspective-origin: 50% 50%;
   z-index: 10;
-  padding: 0 10%;
+  pointer-events: none;
 }
 
-/* Individual content section */
-.contentSection {
-  max-width: 500px;
+/* Content container for briefing */
+.contentContainer {
+  position: absolute;
+  bottom: 130px;
+  right: 0;
+  width: 100%;
+  z-index: 10;
+  padding: 0 5%;
+  transform-style: preserve-3d;
+  pointer-events: all;
+}
+
+/* Military mission briefing styling */
+.techContent {
+  max-width: 850px;
   transition: opacity 0.8s ease-in-out;
+  background-color: rgba(16, 18, 20, 0.85);
+  border-left: 4px solid var(--mil-accent);
+  border-top: 1px solid var(--mil-border);
+  border-bottom: 1px solid var(--mil-border);
+  padding: 25px 30px;
+  position: relative;
+  box-shadow: var(--mil-shadow);
+  transform: perspective(1200px) rotateY(-15deg);
+  transform-origin: right center;
+  margin-left: auto;
+  margin-right: 0;
+  transform-style: preserve-3d;
+  backface-visibility: hidden;
 }
 
-/* Description text styling */
-.description {
-  font-size: 16px;
-  line-height: 1.5;
-  margin-bottom: 12px;
-  color: rgba(255, 255, 255, 0.8);
-  font-weight: 400;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+/* Curved FOV effect */
+.techContent::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: 
+    repeating-linear-gradient(0deg, transparent, transparent 20px, rgba(255,255,255,0.03) 20px, rgba(255,255,255,0.03) 21px);
+  pointer-events: none;
+  opacity: 0.8;
+  z-index: -1;
+}
+
+.techContent::after {
+  content: "CONFIDENTIAL";
+  position: absolute;
+  top: -9px;
+  right: 30px;
+  background-color: var(--mil-alert);
+  color: var(--mil-highlight);
+  font-size: 9px;
+  padding: 2px 8px;
+  font-weight: bold;
+  letter-spacing: 1px;
+  z-index: 10;
+  transform: translateZ(5px);
+}
+
+/* Title box styling */
+.titleBox {
+  margin-bottom: 20px;
+  border-bottom: 1px solid var(--mil-border);
+  padding-bottom: 15px;
+  position: relative;
+  transform: translateZ(10px);
+}
+
+.titleHeader {
+  display: flex;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.titlePrefix {
+  color: var(--mil-accent);
+  font-family: 'Share Tech Mono', monospace;
+  font-weight: bold;
+  font-size: 12px;
+  margin-right: 10px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.titleBlinker {
+  width: 8px;
+  height: 14px;
+  background-color: var(--mil-accent);
+  animation: blink 1s infinite;
 }
 
 /* Title styling */
 .title {
-  font-size: 48px;
+  font-size: 36px;
   line-height: 1.1;
-  font-weight: 700;
-  color: white;
-  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
-  margin-bottom: 8px;
+  font-weight: 600;
+  color: var(--mil-highlight);
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  margin: 8px 0;
+  position: relative;
+  display: inline-block;
 }
 
-/* Container for controls that spans 80% of viewport width */
+.title::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -2px;
+  width: 100%;
+  height: 1px;
+  background: linear-gradient(90deg, var(--mil-accent), transparent);
+}
+
+/* Description text styling */
+.description {
+  font-size: 15px;
+  line-height: 1.6;
+  margin-bottom: 0;
+  color: var(--mil-light);
+  font-weight: 400;
+  font-family: var(--mil-font);
+  letter-spacing: -0.01em;
+  transform: translateZ(5px);
+}
+
+.description::before {
+  content: "";
+  display: block;
+  width: 60px;
+  height: 1px;
+  background-color: var(--mil-border);
+  margin-bottom: 15px;
+}
+
+.descPrefix {
+  color: var(--mil-accent);
+  font-weight: bold;
+  margin-right: 8px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  font-size: 12px;
+  font-family: 'Share Tech Mono', monospace;
+}
+
+/* Mission data */
+.missionData {
+  display: flex;
+  margin-top: 20px;
+  font-size: 12px;
+  border-top: 1px solid var(--mil-border);
+  padding-top: 15px;
+  transform: translateZ(7px);
+}
+
+.missionColumn {
+  flex: 1;
+  min-width: 0;
+  padding-right: 15px;
+}
+
+.missionLabel {
+  color: var(--mil-accent);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 5px;
+  font-family: 'Share Tech Mono', monospace;
+}
+
+.missionValue {
+  color: var(--mil-light);
+  font-family: var(--mil-font);
+}
+
+/* Container for controls centered at the bottom */
 .controlsContainer {
   position: absolute;
-  bottom: 40px;
+  bottom: 30px;
   left: 0;
   width: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
   z-index: 10;
+  pointer-events: all;
 }
 
 /* Navigation controls layout */
 .controls {
-  width: 80%;
+  width: auto;
+  max-width: 600px;
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
+  background-color: rgba(16, 18, 20, 0.85);
+  padding: 8px 15px;
+  border: 1px solid var(--mil-border);
+  box-shadow: var(--mil-shadow);
+  transform: perspective(1200px) rotateY(-15deg);
+  transform-origin: center center;
 }
 
 /* Navigation buttons */
 .navButton {
-  background: rgba(255, 255, 255, 0.2);
-  border: none;
-  border-radius: 50%;
-  width: 40px;
-  height: 40px;
+  background: var(--mil-dark);
+  border: 1px solid var(--mil-border-highlight);
+  border-radius: 0;
+  width: 28px;
+  height: 28px;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  font-size: 18px;
-  color: white;
-  backdrop-filter: blur(5px);
-  transition: background 0.3s ease, transform 0.2s ease;
+  font-size: 14px;
+  color: var(--mil-light);
+  transition: all 0.2s ease;
+  position: relative;
+  transform: translateZ(5px);
+  margin: 0 5px;
 }
 
 .navButton:hover {
-  background: rgba(255, 255, 255, 0.3);
-  transform: scale(1.05);
+  background: var(--mil-medium);
+  border-color: var(--mil-accent);
+}
+
+.navButton:active {
+  background: var(--mil-accent);
+  color: var(--mil-dark);
 }
 
 /* Scene indicators */
 .indicators {
   display: flex;
-  gap: 10px;
+  gap: 15px;
+  transform: translateZ(5px);
 }
 
 .indicator {
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.3);
-  border: none;
+  width: 30px;
+  height: 6px;
+  border-radius: 0;
+  background: var(--mil-dark);
+  border: 1px solid var(--mil-border);
   cursor: pointer;
   transition: all 0.3s ease;
 }
 
 .activeIndicator {
-  background: rgba(255, 255, 255, 0.8);
-  transform: scale(1.2);
+  background: var(--mil-accent);
+  border-color: var(--mil-accent);
 }
 
-/* For dark mode */
-@media (prefers-color-scheme: dark) {
-  .navButton {
-    color: white;
-    background: rgba(255, 255, 255, 0.15);
-  }
-  
-  .navButton:hover {
-    background: rgba(255, 255, 255, 0.25);
-  }
+/* Curved screen scanlines overlay */
+.scanlines {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    to bottom,
+    transparent 50%,
+    rgba(16, 18, 20, 0.02) 51%
+  );
+  background-size: 100% 4px;
+  z-index: 999;
+  pointer-events: none;
+  opacity: 0.4;
+}
+
+/* Screen edge vignette */
+.vignette {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(
+    ellipse at center,
+    transparent 60%,
+    rgba(0, 0, 0, 0.4) 100%
+  );
+  z-index: 998;
+  pointer-events: none;
 }
 
 /* Responsive adjustments */
 @media (max-width: 768px) {
   .controlsContainer {
     bottom: 20px;
+    padding-right: 3%;
   }
   
   .controls {
-    width: 90%;
+    width: 94%;
+    padding: 8px 15px;
+    transform: perspective(1200px) rotateY(-10deg);
   }
   
   .navButton {
-    width: 36px;
-    height: 36px;
-    font-size: 16px;
+    width: 30px;
+    height: 30px;
+    font-size: 12px;
   }
   
   .indicator {
-    width: 10px;
-    height: 10px;
+    width: 24px;
+    height: 5px;
   }
   
   .contentContainer {
     bottom: 80px;
-    padding: 0 6%;
+    padding-right: 3%;
   }
   
   .title {
-    font-size: 36px;
+    font-size: 28px;
   }
   
   .description {
-    font-size: 14px;
+    font-size: 13px;
+  }
+  
+  .techContent {
+    padding: 20px 20px;
+    transform: perspective(1200px) rotateY(-10deg);
+  }
+  
+  .codeTerminal {
+    width: 94%;
+    height: 280px;
+    transform: perspective(1000px) rotateY(-3deg);
+  }
+  
+  .progressBar {
+    width: 94%;
+    transform: perspective(1000px) rotateY(-3deg);
   }
 }
 
