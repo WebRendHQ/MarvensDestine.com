@@ -1,110 +1,55 @@
 "use client";
 
 import { useState, useEffect, useRef } from 'react';
+import { useRouter } from 'next/navigation';
 import Spline from '@splinetool/react-spline';
+import { projectsData } from '@/lib/projectData';
 import styles from './page.module.css';
 
-// Array of Spline scene URLs with matching content
-const splineContent = [
-  {
-    scene: "https://prod.spline.design/HcZu9MGXXX8KnuVk/scene.splinecode",
-    title: "Operation Watchkeeper",
-    description: "Reconnaissance of critical infrastructure with advanced geospatial mapping and satellite surveillance systems. Identified multiple access points and potential vulnerabilities in target area.",
-    opCode: "OW-71225",
-    status: "ACTIVE",
-    clearance: "LEVEL 4",
-    location: "SECTOR 7, GRID 19-A",
-    priority: "ALPHA"
-  },
-  {
-    scene: "https://prod.spline.design/i8eNphGELT2tDQVT/scene.splinecode",
-    title: "Operation Deadbolt",
-    description: "Deployment of tactical countermeasures and defensive perimeter systems following intelligence of hostile incursion. All strategic assets secured and monitoring systems operational.",
-    opCode: "OD-85311",
-    status: "STANDBY",
-    clearance: "LEVEL 3",
-    location: "SECTOR 2, GRID 08-C",
-    priority: "BRAVO"
-  },
-  {
-    scene: "https://prod.spline.design/pvM5sSiYV2ivWraz/scene.splinecode",
-    title: "Operation Blacksite",
-    description: "Extraction and containment of high-value intelligence assets from compromised facility. Data analysis indicates 86% success rate with current tactical approach.",
-    opCode: "OB-42780",
-    status: "PENDING",
-    clearance: "LEVEL 5",
-    location: "SECTOR 9, GRID 32-F",
-    priority: "DELTA"
-  },
-];
-
 // Extract just the scene URLs for the existing logic
-const splineScenes = splineContent.map(item => item.scene);
+const splineScenes = projectsData.map(item => item.scene);
 
-// CodeLoader component to show a code loading animation
+// CodeLoader component to show a minimal Apple-like loading animation
 const CodeLoader = ({ onComplete }: { onComplete: () => void }) => {
   const [progress, setProgress] = useState(0);
-  const [lines, setLines] = useState<string[]>([]);
-  const codeLines = [
-    "> INITIATING DOD SECURE BOOT PROTOCOL v3.11.5",
-    "> VERIFYING KERNEL INTEGRITY... PASS",
-    "> ESTABLISHING SATCOM LINK... CONNECTED",
-    "> AUTHORIZATION REQUIRED...",
-    "> BIOMETRIC SCAN COMPLETE",
-    "> CLEARANCE VERIFIED: TIER-1 TACTICAL",
-    "> ENCRYPTED COMM CHANNELS ACTIVE",
-    "> BRIEFING DATABASE ACCESSED",
-    "> SENSITIVE COMPARTMENTED INFORMATION LOADED",
-    "> TACTICAL INTERFACE ONLINE"
-  ];
-
+  
   useEffect(() => {
-    let currentLine = 0;
     let currentProgress = 0;
-
-    const addLine = () => {
-      if (currentLine < codeLines.length) {
-        setLines(prev => [...prev, codeLines[currentLine]]);
-        currentLine++;
-        setTimeout(addLine, Math.random() * 250 + 200);
-      }
-    };
 
     const incrementProgress = () => {
       if (currentProgress < 100) {
-        currentProgress += Math.floor(Math.random() * 3) + 1;
+        currentProgress += Math.floor(Math.random() * 8) + 3; // Faster increment
         if (currentProgress > 100) currentProgress = 100;
         setProgress(currentProgress);
         
         if (currentProgress === 100) {
           setTimeout(() => {
             onComplete();
-          }, 800);
+          }, 200); // Much faster completion
         } else {
-          setTimeout(incrementProgress, Math.random() * 80 + 40);
+          setTimeout(incrementProgress, Math.random() * 30 + 20); // Much faster timing
         }
       }
     };
 
-    addLine();
-    incrementProgress();
+    // Start immediately with faster timing
+    setTimeout(incrementProgress, 100);
   }, [onComplete]);
 
   return (
     <div className={styles.preloader}>
-      <div className={styles.codeTerminal}>
-        {lines.map((line, index) => (
-          <div key={index} className={styles.codeLine}>
-            {line}
+      <div className={styles.loaderContent}>
+        <div className={styles.loadingText}>
+          Loading
+        </div>
+        <div className={styles.progressContainer}>
+          <div className={styles.progressTrack}>
+            <div 
+              className={styles.progressIndicator} 
+              style={{ width: `${progress}%` }}
+            />
           </div>
-        ))}
-      </div>
-      <div className={styles.progressBar}>
-        <div 
-          className={styles.progressFill} 
-          style={{ width: `${progress}%` }}
-        />
-        <div className={styles.progressText}>SECURE INITIALIZATION {progress}%</div>
+        </div>
       </div>
     </div>
   );
@@ -116,18 +61,45 @@ export default function Home() {
   const [touchStart, setTouchStart] = useState(0);
   const [touchEnd, setTouchEnd] = useState(0);
   const [contentTransitioning, setContentTransitioning] = useState(false);
-  const [visibleContent, setVisibleContent] = useState(splineContent[0]);
+  const [visibleContent, setVisibleContent] = useState(projectsData[0]);
   const [loading, setLoading] = useState(true);
   
-  // Mouse tracking for sway effect
-  const [rotateX, setRotateX] = useState(0);
-  const [rotateY, setRotateY] = useState(-15); // Base rotation
+  // New states for scene transition effects
+  const [sceneTransition, setSceneTransition] = useState({
+    blackScreen: false,
+    blur: false,
+    isActive: false,
+    phase: 'idle' as 'idle' | 'fadeOut' | 'switching' | 'fadeIn'
+  });
+
+  // New state for page transition effects
+  const [pageTransition, setPageTransition] = useState({
+    blackScreen: false,
+    blur: false,
+    isActive: false
+  });
+  
+  const router = useRouter();
   
   // References to track loaded Spline scenes
   const loadedScenes = useRef<{[key: number]: boolean}>({});
-  const containerRef = useRef<HTMLDivElement>(null);
 
-  // Handle scene transition
+  // Handle navigation to project page with transition
+  const handleProjectClick = () => {
+    // Start page transition effect
+    setPageTransition({
+      blackScreen: true,
+      blur: true,
+      isActive: true
+    });
+
+    // Navigate after transition effect starts
+    setTimeout(() => {
+      router.push(`/projects/${visibleContent.slug}`);
+    }, 800);
+  };
+
+  // Handle scene transition with effects
   const goToScene = (index: number) => {
     if (isTransitioning) return;
     
@@ -135,25 +107,102 @@ export default function Home() {
     const newIndex = ((index % splineScenes.length) + splineScenes.length) % splineScenes.length;
     
     if (newIndex !== activeIndex) {
-      // Start transitions
+      // Start transition effects - Phase 1: Fade out current scene
       setIsTransitioning(true);
       setContentTransitioning(true);
+      setSceneTransition({
+        blackScreen: true,
+        blur: true,
+        isActive: true,
+        phase: 'fadeOut'
+      });
       
-      // Update active index immediately for scene transition
-      setActiveIndex(newIndex);
-      
-      // After half the fade-out time, swap content
+      // Phase 2: Scene switching (complete fade out, prepare for switch)
       setTimeout(() => {
-        setVisibleContent(splineContent[newIndex]);
+        setSceneTransition(prev => ({
+          ...prev,
+          phase: 'switching'
+        }));
+      }, 1000);
+      
+      // Actually switch the scene during peak darkness/blur
+      setTimeout(() => {
+        setActiveIndex(newIndex);
+        setVisibleContent(projectsData[newIndex]);
+        setSceneTransition(prev => ({
+          ...prev,
+          phase: 'fadeIn'
+        }));
+      }, 1400);
+      
+      // Phase 3: Start fading in new scene (black screen fade out)
+      setTimeout(() => {
+        setSceneTransition(prev => ({
+          ...prev,
+          blackScreen: false
+        }));
+      }, 1800);
+      
+      // Phase 4: Blur fade out for dramatic reveal of new scene
+      setTimeout(() => {
+        setSceneTransition(prev => ({
+          ...prev,
+          blur: false
+        }));
+      }, 2400);
+      
+      // Complete all transitions
+      setTimeout(() => {
         setContentTransitioning(false);
-      }, 400); // Half of the transition time
-      
-      // After full transition time, end scene transition
-      setTimeout(() => {
         setIsTransitioning(false);
-      }, 800);
+        setSceneTransition({
+          blackScreen: false,
+          blur: false,
+          isActive: false,
+          phase: 'idle'
+        });
+      }, 3600);
     }
   };
+
+  // Handle initial scene load effect
+  useEffect(() => {
+    if (!loading) {
+      // Trigger transition effect on initial load with dramatic timing
+      setSceneTransition({
+        blackScreen: true,
+        blur: true,
+        isActive: true,
+        phase: 'fadeIn'
+      });
+      
+      // Longer initial pause for dramatic effect
+      setTimeout(() => {
+        setSceneTransition(prev => ({
+          ...prev,
+          blackScreen: false
+        }));
+      }, 1000);
+      
+      // Slower blur fade for initial reveal
+      setTimeout(() => {
+        setSceneTransition(prev => ({
+          ...prev,
+          blur: false
+        }));
+      }, 1500);
+      
+      // Complete initial transition
+      setTimeout(() => {
+        setSceneTransition({
+          blackScreen: false,
+          blur: false,
+          isActive: false,
+          phase: 'idle'
+        });
+      }, 2200);
+    }
+  }, [loading]);
 
   // Navigation functions
   const nextScene = () => goToScene(activeIndex + 1);
@@ -180,47 +229,24 @@ export default function Home() {
     }
   };
 
-  // Mouse movement handler for sway effect
-  const handleMouseMove = (e: React.MouseEvent) => {
-    if (containerRef.current) {
-      const { clientWidth, clientHeight } = containerRef.current;
-      const { clientX, clientY } = e;
-      
-      // Calculate mouse position relative to the center of the container
-      const x = (clientX / clientWidth - 0.5) * 2; // -1 to 1
-      const y = (clientY / clientHeight - 0.5) * 2; // -1 to 1
-      
-      // Apply smooth rotation based on mouse position
-      setRotateX(-y * 5); // Tilt up/down based on Y position
-      setRotateY(-15 + x * 8); // Swivel left/right based on X position
-    }
-  };
-
   // Keyboard navigation
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'ArrowRight') nextScene();
       if (e.key === 'ArrowLeft') prevScene();
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        handleProjectClick();
+      }
     };
     
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [activeIndex]);
+  }, [activeIndex, visibleContent]);
 
   // Track which scene is loaded
   const handleSceneLoad = (index: number) => {
     loadedScenes.current[index] = true;
-  };
-
-  // Calculate dynamic styles for sway effect
-  const contentStyle = {
-    transform: `perspective(1200px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`,
-    transition: 'transform 0.2s ease-out'
-  };
-  
-  const controlsStyle = {
-    transform: `perspective(1200px) rotateX(${rotateX * 0.8}deg) rotateY(${rotateY * 0.8}deg)`,
-    transition: 'transform 0.2s ease-out'
   };
 
   return (
@@ -233,8 +259,6 @@ export default function Home() {
           onTouchStart={handleTouchStart}
           onTouchMove={handleTouchMove}
           onTouchEnd={handleTouchEnd}
-          onMouseMove={handleMouseMove}
-          ref={containerRef}
         >
           {/* Spline Scenes */}
           <div className={styles.scenesContainer}>
@@ -244,17 +268,38 @@ export default function Home() {
                 index === activeIndex || 
                 index === (activeIndex + 1) % splineScenes.length || 
                 index === ((activeIndex - 1 + splineScenes.length) % splineScenes.length);
+
+              // Build class names safely
+              let sceneClasses = `${styles.backgroundViewer}`;
+              if (activeIndex === index) sceneClasses += ` ${styles.activeScene}`;
+              if (isTransitioning) sceneClasses += ` ${styles.transitioning}`;
+              if (sceneTransition.blur) sceneClasses += ` ${styles.blurred}`;
+              if (sceneTransition.phase === 'fadeOut') sceneClasses += ` ${styles.phaseFadeOut}`;
+              if (sceneTransition.phase === 'switching') sceneClasses += ` ${styles.phaseSwitching}`;
+              if (sceneTransition.phase === 'fadeIn') sceneClasses += ` ${styles.phaseFadeIn}`;
+              
+              // Add clickable class to active scene
+              if (activeIndex === index) sceneClasses += ` ${styles.clickableScene}`;
                 
               return (
                 <div 
                   key={index}
-                  className={`${styles.backgroundViewer} ${
-                    activeIndex === index ? styles.activeScene : ''
-                  } ${isTransitioning ? styles.transitioning : ''}`}
+                  className={sceneClasses}
                   style={{
                     opacity: activeIndex === index ? 1 : 0,
-                    display: shouldRender ? 'block' : 'none'
+                    display: shouldRender ? 'block' : 'none',
+                    filter: pageTransition.blur ? 'blur(60px)' : undefined
                   }}
+                  onClick={activeIndex === index ? handleProjectClick : undefined}
+                  role={activeIndex === index ? "button" : undefined}
+                  tabIndex={activeIndex === index ? 0 : -1}
+                  onKeyDown={activeIndex === index ? (e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      e.preventDefault();
+                      handleProjectClick();
+                    }
+                  } : undefined}
+                  aria-label={activeIndex === index ? `View ${projectsData[index].title} case study` : undefined}
                 >
                   {shouldRender && (
                     <Spline 
@@ -266,88 +311,120 @@ export default function Home() {
               );
             })}
           </div>
+
+          {/* Scene Transition Overlay */}
+          {sceneTransition.isActive && (
+            <div 
+              className={`${styles.sceneTransitionOverlay} ${
+                sceneTransition.blackScreen ? styles.blackScreen : ''
+              } ${
+                sceneTransition.phase === 'fadeOut' ? styles.overlayFadeOut : ''
+              } ${
+                sceneTransition.phase === 'switching' ? styles.overlaySwitching : ''
+              } ${
+                sceneTransition.phase === 'fadeIn' ? styles.overlayFadeIn : ''
+              }`}
+            />
+          )}
+
+          {/* Page Transition Overlay */}
+          {pageTransition.isActive && (
+            <div 
+              className={`${styles.pageTransitionOverlay} ${
+                pageTransition.blackScreen ? styles.blackScreen : ''
+              }`}
+            />
+          )}
           
           {/* Curved FOV Container for UI Elements */}
           <div className={styles.curvedFOVContainer}>
+            {/* Social Media Island - Top Right */}
+            <div className={styles.socialsContainer}>
+              <div className={styles.socialsIsland}>
+                <a 
+                  href="https://linkedin.com/in/yourprofile" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className={styles.socialButton}
+                  aria-label="LinkedIn"
+                >
+                  <span className={styles.socialIcon}>in</span>
+                </a>
+                <a 
+                  href="https://instagram.com/yourprofile" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className={styles.socialButton}
+                  aria-label="Instagram"
+                >
+                  <span className={styles.socialIcon}>ig</span>
+                </a>
+                <a 
+                  href="https://x.com/yourprofile" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className={styles.socialButton}
+                  aria-label="X (Twitter)"
+                >
+                  <span className={styles.socialIcon}>𝕏</span>
+                </a>
+              </div>
+            </div>
+
             {/* Fixed Position Content Section */}
             <div className={styles.contentContainer}>
               <div 
-                className={`${styles.contentSection} ${styles.techContent}`}
+                className={styles.contentSection}
                 style={{ 
-                  opacity: contentTransitioning ? 0 : 1,
-                  ...contentStyle
+                  opacity: contentTransitioning ? 0 : 1
                 }}
               >
-                <div className={styles.titleBox}>
-                  <div className={styles.titleHeader}>
-                    <span className={styles.titlePrefix}>&gt; MISSION BRIEF:</span>
-                    <span className={styles.titleBlinker}></span>
-                  </div>
-                  <h1 className={styles.title}>{visibleContent.title}</h1>
-                </div>
-                <p className={styles.description}>
-                  <span className={styles.descPrefix}>&gt; SITREP:</span> {visibleContent.description}
-                </p>
-                
-                <div className={styles.missionData}>
-                  <div className={styles.missionColumn}>
-                    <div className={styles.missionLabel}>OPERATION CODE</div>
-                    <div className={styles.missionValue}>{visibleContent.opCode}</div>
-                  </div>
-                  <div className={styles.missionColumn}>
-                    <div className={styles.missionLabel}>STATUS</div>
-                    <div className={styles.missionValue}>{visibleContent.status}</div>
-                  </div>
-                  <div className={styles.missionColumn}>
-                    <div className={styles.missionLabel}>CLEARANCE</div>
-                    <div className={styles.missionValue}>{visibleContent.clearance}</div>
-                  </div>
-                  <div className={styles.missionColumn}>
-                    <div className={styles.missionLabel}>LOCATION</div>
-                    <div className={styles.missionValue}>{visibleContent.location}</div>
-                  </div>
-                  <div className={styles.missionColumn}>
-                    <div className={styles.missionLabel}>PRIORITY</div>
-                    <div className={styles.missionValue}>{visibleContent.priority}</div>
-                  </div>
+                <div className={styles.minimalistContent}>
+                  <h1 className={styles.projectTitle}>
+                    {visibleContent.title}
+                  </h1>
+                  <p className={styles.projectDescription}>
+                    {visibleContent.description}
+                  </p>
                 </div>
               </div>
             </div>
 
             {/* Navigation Controls - Centered at bottom */}
             <div className={styles.controlsContainer}>
-              <div 
-                className={styles.controls}
-                style={controlsStyle}
-              >
-                <button 
-                  className={styles.navButton} 
-                  onClick={prevScene}
-                  aria-label="Previous mission"
-                >
-                  ←
-                </button>
-                
+              <div className={styles.controls}>
                 <div className={styles.indicators}>
                   {splineScenes.map((_, index) => (
                     <button
                       key={index}
                       className={`${styles.indicator} ${activeIndex === index ? styles.activeIndicator : ''}`}
                       onClick={() => goToScene(index)}
-                      aria-label={`Mission ${index + 1}`}
+                      aria-label={`Project ${index + 1}`}
+                      disabled={isTransitioning}
                     />
                   ))}
                 </div>
-                
-                <button 
-                  className={styles.navButton} 
-                  onClick={nextScene}
-                  aria-label="Next mission"
-                >
-                  →
-                </button>
               </div>
             </div>
+
+            {/* Navigation Arrows - Screen Edges */}
+            <button 
+              className={`${styles.navArrow} ${styles.navArrowLeft}`}
+              onClick={prevScene}
+              aria-label="Previous project"
+              disabled={isTransitioning}
+            >
+              ←
+            </button>
+            
+            <button 
+              className={`${styles.navArrow} ${styles.navArrowRight}`}
+              onClick={nextScene}
+              aria-label="Next project"
+              disabled={isTransitioning}
+            >
+              →
+            </button>
           </div>
           
           {/* Screen effects */}
