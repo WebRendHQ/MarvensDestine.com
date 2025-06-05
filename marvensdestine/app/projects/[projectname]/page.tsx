@@ -3,9 +3,9 @@ import { getProjectBySlug, getAllProjectSlugs } from '@/lib/projectData';
 import ProjectPageClient from './ProjectPageClient';
 
 interface ProjectPageProps {
-  params: {
+  params: Promise<{
     projectname: string;
-  };
+  }>;
 }
 
 export async function generateStaticParams() {
@@ -16,7 +16,8 @@ export async function generateStaticParams() {
 }
 
 export async function generateMetadata({ params }: ProjectPageProps) {
-  const project = getProjectBySlug(params.projectname);
+  const { projectname } = await params;
+  const project = getProjectBySlug(projectname);
   
   if (!project) {
     return {
@@ -30,8 +31,9 @@ export async function generateMetadata({ params }: ProjectPageProps) {
   };
 }
 
-export default function ProjectPage({ params }: ProjectPageProps) {
-  const project = getProjectBySlug(params.projectname);
+export default async function ProjectPage({ params }: ProjectPageProps) {
+  const { projectname } = await params;
+  const project = getProjectBySlug(projectname);
 
   if (!project) {
     notFound();
