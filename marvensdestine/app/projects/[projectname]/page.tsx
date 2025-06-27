@@ -49,7 +49,7 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
 
   // Render appropriate client component based on project type
   if (project) {
-    return <ProjectPageClient project={project} />;
+  return <ProjectPageClient project={project} />;
   } else {
     return <NFTProjectPageClient project={nftProject!} />;
   }

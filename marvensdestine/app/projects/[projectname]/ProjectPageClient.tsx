@@ -49,210 +49,330 @@ export default function ProjectPageClient({ project }: ProjectPageClientProps) {
     };
   }, []);
 
+  const handleBackgroundClick = (e: React.MouseEvent) => {
+    if (e.target === e.currentTarget) {
+      window.history.back();
+    }
+  };
+
   return (
-    <main className={styles.container}>
-      {/* Spline Background */}
-      <div 
-        className={styles.backgroundViewer}
-        style={{
-          filter: pageTransition.blur ? 'blur(60px)' : 'blur(20px)',
-          transition: 'filter 1s cubic-bezier(0.25, 0.1, 0.25, 1)'
-        }}
-      >
-        {project.scene && project.scene.trim() !== '' ? (
-          <Spline scene={project.scene} />
-        ) : (
-          <div className={styles.fallbackBackground}>
-            <div className={styles.gradientBackground} />
-          </div>
-        )}
-      </div>
-
-      {/* Page Transition Overlay */}
-      {pageTransition.isActive && (
+    <main className={styles.container} onClick={handleBackgroundClick}>
+      <div className={styles.modalContent}>
+        {/* Spline Background */}
         <div 
-          className={`${styles.pageTransitionOverlay} ${
-            pageTransition.blackScreen ? styles.blackScreen : ''
-          }`}
-        />
-      )}
+          className={styles.backgroundViewer}
+          style={{
+            filter: pageTransition.blur ? 'blur(60px)' : 'blur(20px)',
+            transition: 'filter 1s cubic-bezier(0.25, 0.1, 0.25, 1)'
+          }}
+        >
+          {project.scene && project.scene.trim() !== '' ? (
+            <Spline scene={project.scene} />
+          ) : (
+            <div className={styles.fallbackBackground}>
+              <div className={styles.gradientBackground} />
+            </div>
+          )}
+        </div>
 
-      {/* Content Overlay */}
-      <div 
-        className={styles.contentOverlay}
-        style={{
-          opacity: pageTransition.isActive ? 0 : 1,
-          transition: 'opacity 0.8s cubic-bezier(0.25, 0.1, 0.25, 1) 0.4s'
-        }}
-      >
+        {/* Page Transition Overlay */}
+        {pageTransition.isActive && (
+          <div 
+            className={`${styles.pageTransitionOverlay} ${
+              pageTransition.blackScreen ? styles.blackScreen : ''
+            }`}
+          />
+        )}
+
+        {/* Content Overlay */}
+        <div 
+          className={styles.contentOverlay}
+          style={{
+            opacity: pageTransition.isActive ? 0 : 1,
+            transition: 'opacity 0.8s cubic-bezier(0.25, 0.1, 0.25, 1) 0.4s'
+          }}
+        >
         {/* Header Navigation */}
         <header className={styles.header}>
           <Link href="/" className={styles.backButton}>
             ← BACK TO PORTFOLIO
           </Link>
           <div className={styles.classification}>
-            CASE STUDY
+            3D PROJECT
           </div>
         </header>
 
         {/* Main Content */}
-        <div className={styles.mainContent}>
-          <div className={styles.briefingHeader}>
-            <div className={styles.titleSection}>
-              <span className={styles.prefix}>&gt; PROJECT CASE STUDY:</span>
-              <h1 className={styles.title}>{project.title}</h1>
-              <div className={styles.statusBadge} data-status={project.status.toLowerCase()}>
-                {project.status}
+        <div className={styles.behanceContent}>
+          {/* First hero media */}
+          {project.gallery && project.gallery.length > 0 && (
+            <div className={styles.mediaItem}>
+              {project.gallery[0].type === 'image' ? (
+                <img
+                  src={project.gallery[0].src}
+                  alt={project.gallery[0].alt || ''}
+                  className={styles.fullWidthImage}
+                />
+              ) : (
+                <video
+                  src={project.gallery[0].src}
+                  className={styles.fullWidthVideo}
+                  controls
+                  playsInline
+                />
+              )}
+            </div>
+          )}
+
+          {/* Project title and description */}
+          <div className={styles.textSection}>
+            <h1 className={styles.projectTitle}>{project.title}</h1>
+            <p className={styles.projectDescription}>
+              {project.fullDescription || project.description}
+            </p>
+            
+            {project.technologies && (
+              <div className={styles.techList}>
+                <span className={styles.techLabel}>Technologies:</span>
+                <span className={styles.techText}>{project.technologies.join(', ')}</span>
               </div>
+            )}
+          </div>
+
+          {/* Remaining gallery media interspersed with process */}
+          {project.gallery && project.gallery.length > 1 && (
+            <>
+              {/* Second media item */}
+              <div className={styles.mediaItem}>
+                {project.gallery[1].type === 'image' ? (
+                  <img
+                    src={project.gallery[1].src}
+                    alt={project.gallery[1].alt || ''}
+                    className={styles.fullWidthImage}
+                  />
+                ) : (
+                  <video
+                    src={project.gallery[1].src}
+                    className={styles.fullWidthVideo}
+                    controls
+                    playsInline
+                  />
+                )}
+              </div>
+            </>
+          )}
+
+          {/* Process sections with media */}
+          {project.process && project.process.length > 0 && (
+            <>
+              {project.process.map((step, index) => (
+                <div key={index} className={styles.processBlock}>
+                  {/* Process text */}
+                  <div className={styles.textSection}>
+                    <h3 className={styles.processTitle}>{step.title}</h3>
+                    <p className={styles.processDescription}>{step.description}</p>
+                  </div>
+                  
+                  {/* Process media */}
+                  {step.media && step.media.length > 0 && (
+                    <div className={styles.processMedia}>
+                      {step.media.map((media, mediaIndex) => (
+                        <div key={mediaIndex} className={styles.mediaItem}>
+                          {media.type === 'image' ? (
+                            <img
+                              src={media.src}
+                              alt={media.alt || ''}
+                              className={styles.fullWidthImage}
+                            />
+                          ) : (
+                            <video
+                              src={media.src}
+                              className={styles.fullWidthVideo}
+                              controls
+                              playsInline
+                            />
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  )}
+
+                  {/* Intersperse remaining gallery items */}
+                  {project.gallery && project.gallery.length > index + 2 && (
+                    <div className={styles.mediaItem}>
+                      {project.gallery[index + 2].type === 'image' ? (
+                        <img
+                          src={project.gallery[index + 2].src}
+                          alt={project.gallery[index + 2].alt || ''}
+                          className={styles.fullWidthImage}
+                        />
+                      ) : (
+                        <video
+                          src={project.gallery[index + 2].src}
+                          className={styles.fullWidthVideo}
+                          controls
+                          playsInline
+                        />
+                      )}
+                    </div>
+                  )}
+                </div>
+              ))}
+            </>
+          )}
+
+          {/* Project Meta Information */}
+          <div className={styles.textSection}>
+            <div className={styles.projectMeta}>
+              {project.projectDuration && (
+                <div className={styles.metaItem}>
+                  <span className={styles.metaValue}>{project.projectDuration}</span>
+                  <span className={styles.metaLabel}>Duration</span>
+                </div>
+              )}
+              {project.budget && (
+                <div className={styles.metaItem}>
+                  <span className={styles.metaValue}>{project.budget}</span>
+                  <span className={styles.metaLabel}>Budget Range</span>
+                </div>
+              )}
+              {project.clientType && (
+                <div className={styles.metaItem}>
+                  <span className={styles.metaValue}>{project.clientType}</span>
+                  <span className={styles.metaLabel}>Industry</span>
+                </div>
+              )}
             </div>
           </div>
 
-          {/* Project Overview */}
-          <section className={styles.section}>
-            <h2 className={styles.sectionTitle}>&gt; PROJECT OVERVIEW</h2>
-            <p className={styles.description}>
-              {project.fullDescription || project.description}
-            </p>
-          </section>
-
-          {/* Project Data Grid */}
-          <section className={styles.section}>
-            <h2 className={styles.sectionTitle}>&gt; PROJECT DETAILS</h2>
-            <div className={styles.dataGrid}>
-              <div className={styles.dataCard}>
-                <div className={styles.dataLabel}>PROJECT CODE</div>
-                <div className={styles.dataValue}>{project.opCode}</div>
-              </div>
-              <div className={styles.dataCard}>
-                <div className={styles.dataLabel}>PRIORITY LEVEL</div>
-                <div className={styles.dataValue}>{project.priority}</div>
-              </div>
-              <div className={styles.dataCard}>
-                <div className={styles.dataLabel}>SCOPE</div>
-                <div className={styles.dataValue}>{project.clearance}</div>
-              </div>
-              <div className={styles.dataCard}>
-                <div className={styles.dataLabel}>TIMELINE</div>
-                <div className={styles.dataValue}>{project.timeline || 'ONGOING'}</div>
-              </div>
-            </div>
-          </section>
-
-          {/* Objectives */}
-          {project.objectives && (
-            <section className={styles.section}>
-              <h2 className={styles.sectionTitle}>&gt; PROJECT GOALS</h2>
-              <ul className={styles.objectivesList}>
-                {project.objectives.map((objective, index) => (
-                  <li key={index} className={styles.objective}>
-                    <span className={styles.objectiveNumber}>{String(index + 1).padStart(2, '0')}</span>
-                    {objective}
+          {/* Services Provided */}
+          {project.services && (
+            <div className={styles.textSection}>
+              <h4 className={styles.sectionTitle}>Services Provided</h4>
+              <ul className={styles.servicesList}>
+                {project.services.map((service, index) => (
+                  <li key={index} className={styles.serviceItem}>
+                    {service}
                   </li>
                 ))}
               </ul>
-            </section>
+            </div>
           )}
 
-          {/* Team & Technologies */}
-          <div className={styles.twoColumnGrid}>
-            {project.personnel && (
-              <section className={styles.section}>
-                <h2 className={styles.sectionTitle}>&gt; TEAM</h2>
-                <div className={styles.personnelInfo}>
-                  <div className={styles.personnelItem}>
-                    <span className={styles.personnelLabel}>PROJECT LEAD:</span>
-                    <span className={styles.personnelValue}>{project.personnel.commander}</span>
-                  </div>
-                  <div className={styles.personnelItem}>
-                    <span className={styles.personnelLabel}>TEAM SIZE:</span>
-                    <span className={styles.personnelValue}>{project.personnel.operatives}</span>
-                  </div>
-                  <div className={styles.personnelItem}>
-                    <span className={styles.personnelLabel}>EXPERTISE:</span>
-                    <div className={styles.specializationTags}>
-                      {project.personnel.specialization.map((spec, index) => (
-                        <span key={index} className={styles.specializationTag}>
-                          {spec}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              </section>
-            )}
-
-            {project.assets && (
-              <section className={styles.section}>
-                <h2 className={styles.sectionTitle}>&gt; TECHNOLOGIES USED</h2>
-                <ul className={styles.assetsList}>
-                  {project.assets.map((asset, index) => (
-                    <li key={index} className={styles.asset}>
-                      {asset}
-                    </li>
-                  ))}
-                </ul>
-              </section>
-            )}
-          </div>
-
-          {/* Location & Challenge */}
-          <div className={styles.twoColumnGrid}>
-            <section className={styles.section}>
-              <h2 className={styles.sectionTitle}>&gt; PROJECT CONTEXT</h2>
-              <div className={styles.locationInfo}>
-                <div className={styles.locationItem}>
-                  <span className={styles.locationLabel}>INDUSTRY:</span>
-                  <span className={styles.locationValue}>{project.location}</span>
-                </div>
-                {project.coordinates && (
-                  <>
-                    <div className={styles.locationItem}>
-                      <span className={styles.locationLabel}>SCALE:</span>
-                      <span className={styles.locationValue}>
-                        {project.coordinates.latitude}, {project.coordinates.longitude}
-                      </span>
-                    </div>
-                    <div className={styles.locationItem}>
-                      <span className={styles.locationLabel}>COMPLEXITY:</span>
-                      <span className={styles.locationValue}>{project.coordinates.elevation}</span>
-                    </div>
-                  </>
-                )}
-              </div>
-            </section>
-
-            {project.riskAssessment && (
-              <section className={styles.section}>
-                <h2 className={styles.sectionTitle}>&gt; CHALLENGES FACED</h2>
-                <div className={styles.riskAssessment}>
-                  {project.riskAssessment}
-                </div>
-              </section>
-            )}
-          </div>
-
-          {/* Project Classification Footer */}
-          {project.classification && (
-            <footer className={styles.classificationFooter}>
-              <div className={styles.classificationLevel}>
-                {project.classification.level}
-              </div>
-              <div className={styles.classificationDetails}>
-                <div className={styles.compartments}>
-                  CATEGORIES: {project.classification.compartments.join(', ')}
-                </div>
-                <div className={styles.distribution}>
-                  VISIBILITY: {project.classification.distribution}
-                </div>
-              </div>
-            </footer>
+          {/* Key Deliverables */}
+          {project.deliverables && (
+            <div className={styles.textSection}>
+              <h4 className={styles.sectionTitle}>Key Deliverables</h4>
+              <ul className={styles.deliverablesList}>
+                {project.deliverables.map((deliverable, index) => (
+                  <li key={index} className={styles.deliverableItem}>
+                    {deliverable}
+                  </li>
+                ))}
+              </ul>
+            </div>
           )}
+
+          {/* Challenges & Solutions */}
+          {(project.challenges || project.solutions) && (
+            <div className={styles.textSection}>
+              {project.challenges && (
+                <div className={styles.clientSection}>
+                  <h4 className={styles.sectionTitle}>Challenges</h4>
+                  <ul className={styles.challengesList}>
+                    {project.challenges.map((challenge, index) => (
+                      <li key={index} className={styles.challengeItem}>
+                        {challenge}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+              
+              {project.solutions && (
+                <div className={styles.clientSection}>
+                  <h4 className={styles.sectionTitle}>Solutions</h4>
+                  <ul className={styles.solutionsList}>
+                    {project.solutions.map((solution, index) => (
+                      <li key={index} className={styles.solutionItem}>
+                        {solution}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* Results */}
+          {project.results && (
+            <div className={styles.textSection}>
+              <h4 className={styles.resultsTitle}>Results & Impact</h4>
+              <ul className={styles.results}>
+                {project.results.map((result, index) => (
+                  <li key={index} className={styles.resultItem}>
+                    {result}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+
+          {/* Client Testimonial */}
+          {project.testimonial && (
+            <div className={styles.testimonial}>
+              <div className={styles.testimonialQuote}>"{project.testimonial.quote}"</div>
+              <div className={styles.testimonialAuthor}>{project.testimonial.author}</div>
+              <div className={styles.testimonialCompany}>{project.testimonial.company}</div>
+            </div>
+          )}
+
+          {/* Any remaining gallery items */}
+          {project.gallery && project.gallery.length > 2 && project.process && (
+            <>
+              {project.gallery.slice(2 + (project.process?.length || 0)).map((item, index) => (
+                <div key={index + 2 + (project.process?.length || 0)} className={styles.mediaItem}>
+                  {item.type === 'image' ? (
+                    <img
+                      src={item.src}
+                      alt={item.alt || ''}
+                      className={styles.fullWidthImage}
+                    />
+                  ) : (
+                    <video
+                      src={item.src}
+                      className={styles.fullWidthVideo}
+                      controls
+                      playsInline
+                    />
+                  )}
+                </div>
+              ))}
+            </>
+          )}
+
+          {/* Project Footer */}
+          <div className={styles.projectFooter}>
+            <h3 className={styles.footerTitle}>Ready to Start Your Project?</h3>
+            <p className={styles.footerDescription}>
+              Let's collaborate to bring your vision to life with cutting-edge 3D visualization and interactive experiences.
+            </p>
+            <div className={styles.footerActions}>
+              <a href="mailto:hello@marvensdestine.com" className={`${styles.footerButton} ${styles.primary}`}>
+                Start a Project
+              </a>
+              <a href="/" className={styles.footerButton}>
+                View More Work
+              </a>
+            </div>
+          </div>
         </div>
       </div>
 
-      {/* Screen Effects */}
-      <div className={styles.scanlines}></div>
-      <div className={styles.vignette}></div>
+        {/* Screen Effects */}
+        <div className={styles.scanlines}></div>
+        <div className={styles.vignette}></div>
+      </div>
     </main>
   );
 } 

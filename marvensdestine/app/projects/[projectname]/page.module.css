@@ -1,12 +1,18 @@
 /* Container for the project page */
 .container {
-  width: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
   height: 100vh;
-  position: relative;
-  margin: 0;
-  padding: 0;
-  overflow: hidden;
-  background-color: #0b0c0e;
+  z-index: 1000;
+  background: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(10px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 60px;
+  box-sizing: border-box;
 }
 
 /* Background Spline viewer */
@@ -17,6 +23,7 @@
   width: 100%;
   height: 100%;
   z-index: 0;
+  overflow: hidden;
 }
 
 /* Fallback Background */
@@ -40,18 +47,44 @@
   left: 0;
 }
 
+/* Modal content wrapper */
+.modalContent {
+  width: 100%;
+  max-width: 1200px;
+  height: 100vh;
+  background: rgba(11, 12, 14, 0.95);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  overflow: hidden;
+  position: relative;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+}
+
 /* Content overlay */
 .contentOverlay {
-  position: absolute;
-  top: 0;
-  left: 0;
   width: 100%;
   height: 100%;
-  z-index: 10;
   overflow-y: auto;
-  background: rgba(11, 12, 14, 0.1);
-  backdrop-filter: blur(1px);
-  -webkit-backdrop-filter: blur(1px);
+  overflow-x: hidden;
+  position: relative;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.3) transparent;
+}
+
+.contentOverlay::-webkit-scrollbar {
+  width: 6px;
+}
+
+.contentOverlay::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.contentOverlay::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 3px;
+}
+
+.contentOverlay::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.5);
 }
 
 /* Header navigation */
@@ -705,4 +738,475 @@
   letter-spacing: -0.005em;
   text-align: right;
   flex: 1;
+}
+
+/* Behance-style Layout */
+.behanceContent {
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  color: white;
+  min-height: 100%;
+}
+
+/* Media Items */
+.mediaItem {
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  display: block;
+}
+
+.fullWidthImage,
+.fullWidthVideo {
+  width: 100%;
+  height: auto;
+  display: block;
+  margin: 0;
+  padding: 0;
+  border: none;
+  border-radius: 0;
+  object-fit: cover;
+}
+
+.fullWidthVideo {
+  background: #000;
+}
+
+/* Process Sections */
+.processBlock {
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+.processMedia {
+  width: 100%;
+}
+
+.textSection {
+  max-width: 800px;
+  margin: 60px auto;
+  padding: 0 40px;
+}
+
+.processTitle {
+  font-size: 24px;
+  font-weight: 600;
+  color: white;
+  margin: 0 0 16px 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Helvetica Neue', system-ui, sans-serif;
+}
+
+.processDescription {
+  font-size: 18px;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.8);
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Helvetica Neue', system-ui, sans-serif;
+  font-weight: 300;
+}
+
+/* Text Sections */
+
+.projectTitle {
+  font-size: clamp(32px, 6vw, 56px);
+  line-height: 1.1;
+  font-weight: 300;
+  color: white;
+  margin: 0 0 24px 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Helvetica Neue', system-ui, sans-serif;
+  letter-spacing: -0.02em;
+}
+
+.projectDescription {
+  font-size: 18px;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.85);
+  margin: 0 0 40px 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Helvetica Neue', system-ui, sans-serif;
+  font-weight: 300;
+}
+
+.techList {
+  margin-bottom: 40px;
+  padding-bottom: 40px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.techLabel {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.6);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-right: 16px;
+}
+
+.techText {
+  font-size: 16px;
+  color: rgba(255, 255, 255, 0.9);
+  font-weight: 400;
+}
+
+.resultsList {
+  margin-bottom: 40px;
+}
+
+.resultsTitle {
+  font-size: 18px;
+  font-weight: 600;
+  color: white;
+  margin: 0 0 20px 0;
+}
+
+.results {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.resultItem {
+  font-size: 16px;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.8);
+  margin-bottom: 12px;
+  padding-left: 20px;
+  position: relative;
+}
+
+.resultItem::before {
+  content: "•";
+  position: absolute;
+  left: 0;
+  color: rgba(255, 255, 255, 0.4);
+  font-weight: 700;
+}
+
+/* NFT-specific styles */
+.collectionInfo {
+  margin-bottom: 40px;
+  padding-bottom: 40px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.collectionStats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 24px;
+}
+
+.statItem {
+  text-align: center;
+}
+
+.statValue {
+  font-size: 20px;
+  font-weight: 600;
+  color: white;
+  display: block;
+  margin-bottom: 4px;
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Helvetica Neue', system-ui, sans-serif;
+}
+
+.statLabel {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.6);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-weight: 500;
+}
+
+.sectionTitle {
+  font-size: 18px;
+  font-weight: 600;
+  color: white;
+  margin: 0 0 16px 0;
+}
+
+.inspirationSection,
+.processSection,
+.raritySection,
+.featuresSection {
+  margin-bottom: 40px;
+}
+
+.inspirationText {
+  font-size: 16px;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.8);
+  margin: 0;
+}
+
+.processList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.processItem {
+  font-size: 16px;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.8);
+  margin-bottom: 12px;
+  padding-left: 20px;
+  position: relative;
+}
+
+.processItem::before {
+  content: "•";
+  position: absolute;
+  left: 0;
+  color: rgba(255, 255, 255, 0.4);
+  font-weight: 700;
+}
+
+.rarityInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.rarityItem {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.8);
+  padding: 8px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.rarityItem:last-child {
+  border-bottom: none;
+}
+
+.utilitiesSection,
+.roadmapSection {
+  margin-bottom: 32px;
+}
+
+.featuresList,
+.roadmapList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.featureItem,
+.roadmapItem {
+  font-size: 16px;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.8);
+  margin-bottom: 12px;
+  padding-left: 20px;
+  position: relative;
+}
+
+.featureItem::before,
+.roadmapItem::before {
+  content: "•";
+  position: absolute;
+  left: 0;
+  color: rgba(255, 255, 255, 0.4);
+  font-weight: 700;
+}
+
+/* Client-focused sections */
+.clientSection {
+  margin-bottom: 40px;
+}
+
+.projectMeta {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 24px;
+  margin-bottom: 40px;
+  padding-bottom: 40px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.metaItem {
+  text-align: center;
+}
+
+.metaValue {
+  font-size: 18px;
+  font-weight: 600;
+  color: white;
+  display: block;
+  margin-bottom: 4px;
+}
+
+.metaLabel {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.6);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-weight: 500;
+}
+
+.servicesList,
+.deliverablesList,
+.challengesList,
+.solutionsList,
+.marketingList {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 24px 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 12px;
+}
+
+.serviceItem,
+.deliverableItem,
+.challengeItem,
+.solutionItem,
+.marketingItem {
+  padding: 12px 16px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.testimonial {
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 16px;
+  padding: 32px;
+  margin: 40px 0;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  text-align: center;
+}
+
+.testimonialQuote {
+  font-size: 18px;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.9);
+  font-style: italic;
+  margin-bottom: 20px;
+}
+
+.testimonialAuthor {
+  font-size: 16px;
+  color: white;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.testimonialCompany {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+/* Footer */
+.projectFooter {
+  background: rgba(0, 0, 0, 0.5);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 40px;
+  text-align: center;
+  margin-top: 60px;
+}
+
+.footerTitle {
+  font-size: 24px;
+  font-weight: 600;
+  color: white;
+  margin-bottom: 16px;
+}
+
+.footerDescription {
+  font-size: 16px;
+  color: rgba(255, 255, 255, 0.8);
+  margin-bottom: 24px;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.footerActions {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.footerButton {
+  padding: 12px 24px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+  color: white;
+  text-decoration: none;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.footerButton:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: translateY(-1px);
+}
+
+.footerButton.primary {
+  background: linear-gradient(45deg, #007AFF, #5856D6);
+  border-color: transparent;
+}
+
+.footerButton.primary:hover {
+  background: linear-gradient(45deg, #0051D5, #4640C7);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .container {
+    padding: 0 20px;
+  }
+  
+  .modalContent {
+    height: 100vh;
+    max-width: 100%;
+  }
+  
+  .textSection {
+    margin: 40px auto;
+    padding: 0 20px;
+  }
+  
+  .projectTitle {
+    font-size: clamp(28px, 8vw, 40px);
+  }
+  
+  .processTitle {
+    font-size: 20px;
+  }
+  
+  .processDescription {
+    font-size: 16px;
+  }
+  
+  .collectionStats,
+  .projectMeta {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+  
+  .statValue {
+    font-size: 18px;
+  }
+  
+  .servicesList,
+  .deliverablesList,
+  .challengesList,
+  .solutionsList,
+  .marketingList {
+    grid-template-columns: 1fr;
+  }
+  
+  .footerActions {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .footerButton {
+    width: 200px;
+  }
 } 

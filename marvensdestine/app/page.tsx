@@ -388,22 +388,40 @@ export default function Home() {
           
           {/* Curved FOV Container for UI Elements */}
           <div className={styles.curvedFOVContainer}>
-            {/* Project Type Toggle - Top Left */}
+            {/* Project Type Toggle - Bottom Left */}
             <div className={styles.toggleContainer}>
               <div className={styles.projectToggle}>
                 <button
                   className={`${styles.toggleButton} ${projectType === '3d' ? styles.active : ''}`}
                   onClick={() => handleProjectTypeSwitch('3d')}
                   disabled={isTransitioning}
+                  title="3D Projects"
+                  aria-label="3D Projects"
                 >
-                  3D Projects
+                  {/* 3D Cube Icon */}
+                  <svg className={styles.toggleIcon} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+                    <path d="M2 17l10 5 10-5"/>
+                    <path d="M2 12l10 5 10-5"/>
+                  </svg>
                 </button>
                 <button
                   className={`${styles.toggleButton} ${projectType === 'nft' ? styles.active : ''}`}
                   onClick={() => handleProjectTypeSwitch('nft')}
                   disabled={isTransitioning}
+                  title="NFT Collections"
+                  aria-label="NFT Collections"
                 >
-                  NFT Collections
+                  {/* Bored Ape Outline Icon */}
+                  <svg className={styles.toggleIcon} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                    {/* Ape face outline */}
+                    <circle cx="12" cy="12" r="10"/>
+                    <circle cx="8" cy="10" r="1.5" fill="currentColor"/>
+                    <circle cx="16" cy="10" r="1.5" fill="currentColor"/>
+                    <path d="M9 16c1 1 3 1 6 0"/>
+                    <path d="M6 8c0-2 2-3 6-3s6 1 6 3"/>
+                    <path d="M7 15c0 1 1 2 2 2h6c1 0 2-1 2-2"/>
+                  </svg>
                 </button>
                 <div className={`${styles.toggleSlider} ${projectType === 'nft' ? styles.nftPosition : ''}`} />
               </div>

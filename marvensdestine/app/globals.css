@@ -1,17 +1,17 @@
 :root {
-  --background: #0b0c0e;
-  --foreground: #d8d9da;
+  --background: #000000;
+  --foreground: #ffffff;
   --mil-font: 'JetBrains Mono', 'Courier New', monospace;
   --mil-header-font: 'Rajdhani', 'Arial Narrow', sans-serif;
-  --mil-accent: #839496;
+  --mil-accent: #ffffff;
   --mil-highlight: #ffffff;
-  --mil-dark: #101214;
-  --mil-medium: #1a1d21;
-  --mil-light: #d6d7d8;
-  --mil-alert: #b54c4c;
-  --mil-success: #4c7c4c;
-  --mil-border: #2a2f34;
-  --mil-border-highlight: #465159;
+  --mil-dark: #000000;
+  --mil-medium: #000000;
+  --mil-light: #ffffff;
+  --mil-alert: #ffffff;
+  --mil-success: #ffffff;
+  --mil-border: rgba(255, 255, 255, 0.1);
+  --mil-border-highlight: rgba(255, 255, 255, 0.2);
   --mil-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
 }
 
@@ -54,9 +54,7 @@ body {
   -moz-osx-font-smoothing: grayscale;
   margin: 0;
   padding: 0;
-  background-image: 
-    radial-gradient(circle at 50% 50%, rgba(50, 55, 60, 0.08) 0%, transparent 80%),
-    repeating-linear-gradient(0deg, rgba(32, 35, 40, 0.1) 0px, rgba(32, 35, 40, 0.1) 1px, transparent 1px, transparent 4px);
+  background-color: #000000;
   letter-spacing: -0.02em;
 }
 
@@ -78,17 +76,17 @@ a {
 }
 
 ::-webkit-scrollbar-track {
-  background: var(--mil-dark);
-  border-left: 1px solid var(--mil-border);
+  background: #000000;
+  border-left: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--mil-border-highlight);
+  background: rgba(255, 255, 255, 0.2);
   border-radius: 0;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--mil-accent);
+  background: rgba(255, 255, 255, 0.4);
 }
 
 /* Typography */

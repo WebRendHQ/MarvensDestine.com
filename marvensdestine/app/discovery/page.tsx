@@ -30,9 +30,9 @@ export default function DiscoveryPage() {
   const [eventId, setEventId] = useState<string>('');
   const [meetLink, setMeetLink] = useState<string>('');
   const [formData, setFormData] = useState<FormData>({
-    email: 'john@example.com',
-    firstName: 'John',
-    lastName: 'Doe',
+    email: '',
+    firstName: '',
+    lastName: '',
     projectType: '',
     budget: '',
     timeline: '',
@@ -280,39 +280,44 @@ export default function DiscoveryPage() {
             <h3>Your Information</h3>
             <div className={styles.formGrid}>
               <div className={styles.inputGroup}>
-                <label>First Name</label>
+                <label htmlFor="firstName">First Name</label>
                 <input
+                  id="firstName"
+                  name="firstName"
                   type="text"
                   value={formData.firstName}
                   onChange={(e) => handleInputChange('firstName', e.target.value)}
-                  placeholder="John"
+                  placeholder="Enter your first name"
                   autoComplete="given-name"
                   required
                 />
               </div>
               <div className={styles.inputGroup}>
-                <label>Last Name</label>
+                <label htmlFor="lastName">Last Name</label>
                 <input
+                  id="lastName"
+                  name="lastName"
                   type="text"
                   value={formData.lastName}
                   onChange={(e) => handleInputChange('lastName', e.target.value)}
-                  placeholder="Doe"
+                  placeholder="Enter your last name"
                   autoComplete="family-name"
                   required
                 />
               </div>
               <div className={styles.inputGroup}>
-                <label>Email</label>
+                <label htmlFor="email">Email Address</label>
                 <input
+                  id="email"
+                  name="email"
                   type="email"
                   value={formData.email}
                   onChange={(e) => handleInputChange('email', e.target.value)}
-                  placeholder="john@company.com"
+                  placeholder="Enter your email address"
                   autoComplete="email"
                   required
                 />
               </div>
-
             </div>
 
             <button
@@ -339,58 +344,71 @@ export default function DiscoveryPage() {
             <p className={styles.subtitle}>Help us prepare for our conversation</p>
 
             <div className={styles.inputGroup}>
-              <label>Project Type</label>
+              <label htmlFor="projectType">Project Type</label>
               <select
+                id="projectType"
+                name="projectType"
                 value={formData.projectType}
                 onChange={(e) => handleInputChange('projectType', e.target.value)}
+                required
               >
                 <option value="">Select project type</option>
-                <option value="3d-visualization">3D Visualization</option>
-                <option value="product-design">Product Design</option>
-                <option value="animation">Animation</option>
-                <option value="web-experience">Web Experience</option>
-                <option value="branding">Branding</option>
+                <option value="3d-visualization">3D Visualization & Animation</option>
+                <option value="product-design">Product Design & Prototyping</option>
+                <option value="animation">Motion Graphics & Animation</option>
+                <option value="web-experience">Interactive Web Experience</option>
+                <option value="nft-collection">NFT Collection Development</option>
+                <option value="branding">Branding & Visual Identity</option>
                 <option value="other">Other</option>
               </select>
             </div>
 
             <div className={styles.inputGroup}>
-              <label>Budget Range</label>
+              <label htmlFor="budget">Budget Range</label>
               <select
+                id="budget"
+                name="budget"
                 value={formData.budget}
                 onChange={(e) => handleInputChange('budget', e.target.value)}
+                required
               >
                 <option value="">Select budget range</option>
-                <option value="5k-10k">$5K - $10K</option>
-                <option value="10k-25k">$10K - $25K</option>
-                <option value="25k-50k">$25K - $50K</option>
-                <option value="50k-100k">$50K - $100K</option>
-                <option value="100k+">$100K+</option>
+                <option value="5k-15k">$5K - $15K</option>
+                <option value="15k-35k">$15K - $35K</option>
+                <option value="35k-75k">$35K - $75K</option>
+                <option value="75k-150k">$75K - $150K</option>
+                <option value="150k+">$150K+</option>
               </select>
             </div>
 
             <div className={styles.inputGroup}>
-              <label>Timeline</label>
+              <label htmlFor="timeline">Project Timeline</label>
               <select
+                id="timeline"
+                name="timeline"
                 value={formData.timeline}
                 onChange={(e) => handleInputChange('timeline', e.target.value)}
+                required
               >
                 <option value="">Select timeline</option>
-                <option value="asap">ASAP</option>
+                <option value="asap">ASAP (Rush project)</option>
                 <option value="1-2-months">1-2 months</option>
                 <option value="3-6-months">3-6 months</option>
                 <option value="6-12-months">6-12 months</option>
-                <option value="flexible">Flexible</option>
+                <option value="flexible">Flexible timeline</option>
               </select>
             </div>
 
             <div className={styles.inputGroup}>
-              <label>Project Description</label>
+              <label htmlFor="description">Project Description</label>
               <textarea
+                id="description"
+                name="description"
                 value={formData.description}
                 onChange={(e) => handleInputChange('description', e.target.value)}
-                placeholder="Tell us more about your project, goals, and any specific requirements..."
-                rows={4}
+                placeholder="Tell us about your project vision, goals, target audience, and any specific requirements or features you have in mind..."
+                rows={5}
+                required
               />
             </div>
 

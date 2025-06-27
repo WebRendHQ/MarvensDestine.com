@@ -1,3 +1,12 @@
+export interface MediaItem {
+  type: 'image' | 'video';
+  src: string;
+  alt?: string;
+  caption?: string;
+  width?: number;
+  height?: number;
+}
+
 export interface ProjectData {
   scene?: string;
   title: string;
@@ -13,6 +22,29 @@ export interface ProjectData {
   timeline?: string;
   assets?: string[];
   riskAssessment?: string;
+  // New media properties for showcase
+  heroImage?: string;
+  gallery?: MediaItem[];
+  process?: {
+    title: string;
+    description: string;
+    media?: MediaItem[];
+  }[];
+  technologies?: string[];
+  results?: string[];
+  // Client-focused information
+  projectDuration?: string;
+  budget?: string;
+  clientType?: string;
+  services?: string[];
+  deliverables?: string[];
+  challenges?: string[];
+  solutions?: string[];
+  testimonial?: {
+    quote: string;
+    author: string;
+    company: string;
+  };
   personnel?: {
     commander: string;
     operatives: number;
@@ -40,6 +72,28 @@ export interface NFTProjectData {
   status: string;
   slug: string;
   fullDescription?: string;
+  // New media properties for NFT showcase
+  heroImage?: string;
+  gallery?: MediaItem[];
+  artworkShowcase?: {
+    title: string;
+    description: string;
+    media?: MediaItem[];
+  }[];
+  creationProcess?: string[];
+  inspiration?: string;
+  // Client-focused information
+  projectDuration?: string;
+  clientType?: string;
+  services?: string[];
+  deliverables?: string[];
+  marketingStrategy?: string[];
+  communitySize?: string;
+  testimonial?: {
+    quote: string;
+    author: string;
+    company: string;
+  };
   rarity?: {
     common: number;
     uncommon: number;
@@ -69,6 +123,68 @@ export const projectsData: ProjectData[] = [
     location: "SECTOR 7, GRID 19-A",
     priority: "ALPHA",
     slug: "operation-watchkeeper",
+    heroImage: "https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=1200&h=800&fit=crop",
+    gallery: [
+      { type: 'image', src: 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=1200&h=800&fit=crop', alt: 'Stage setup overview' },
+      { type: 'video', src: '/projects/videos/ryandestinedoyou.mp4', alt: 'Point cloud animation' },
+      { type: 'image', src: 'https://images.unsplash.com/photo-1514320291840-2e0a9bf2a9ae?w=1200&h=800&fit=crop', alt: 'Geometry nodes setup' },
+      { type: 'image', src: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=1200&h=800&fit=crop', alt: 'Final stage render' }
+    ],
+    process: [
+      {
+        title: "Concept Development",
+        description: "Initial design concepts and mood boarding for the I CAN'T SLEEP tour visual identity.",
+        media: [
+          { type: 'image', src: 'https://images.unsplash.com/photo-1558618047-3c8c76ca7d13?w=1200&h=800&fit=crop', alt: 'Concept art 1' },
+          { type: 'image', src: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1200&h=800&fit=crop', alt: 'Concept art 2' }
+        ]
+      },
+      {
+        title: "Technical Implementation", 
+        description: "Development of the geometry node system for real-time point cloud animations.",
+        media: [
+          { type: 'image', src: 'https://images.unsplash.com/photo-1518709268805-4e9042af2176?w=1200&h=800&fit=crop', alt: 'Node development process' }
+        ]
+      }
+    ],
+    technologies: ["Blender", "Geometry Nodes", "Python", "OSC Protocol", "TouchDesigner"],
+    results: [
+      "Successfully deployed across 25+ tour venues",
+      "Reduced setup time by 60% using procedural systems", 
+      "Generated 2M+ social media impressions"
+    ],
+    // Client-focused information
+    projectDuration: "6 months",
+    budget: "$150K - $250K",
+    clientType: "Music & Entertainment",
+    services: [
+      "3D Visual Design & Animation",
+      "Real-time Rendering Systems", 
+      "Live Performance Integration",
+      "Technical Documentation & Training"
+    ],
+    deliverables: [
+      "Custom 3D visual system",
+      "Real-time control interface",
+      "Technical documentation",
+      "On-site deployment support",
+      "Post-launch optimization"
+    ],
+    challenges: [
+      "Real-time rendering for large venues",
+      "Seamless integration with existing audio systems",
+      "Cross-platform compatibility requirements"
+    ],
+    solutions: [
+      "Developed custom geometry node system for efficient real-time processing",
+      "Implemented OSC protocol for seamless audio-visual synchronization",
+      "Created modular system architecture for easy venue adaptation"
+    ],
+    testimonial: {
+      quote: "The visual system transformed our live performance experience. The procedural animations perfectly synced with our music, creating an immersive atmosphere that our fans absolutely loved.",
+      author: "Clayton Knight",
+      company: "ODESZA"
+    },
     fullDescription: "Operation Watchkeeper represents a comprehensive surveillance and reconnaissance mission targeting critical infrastructure elements within the designated operational theater. The mission employs advanced geospatial mapping technologies, satellite surveillance systems, and ground-based reconnaissance assets to provide detailed intelligence assessment of the target area. All identified access points have been catalogued and potential vulnerabilities assessed using standardized threat evaluation protocols.",
     objectives: [
       "Conduct comprehensive geospatial mapping of target infrastructure",
@@ -247,6 +363,66 @@ export const nftProjectsData: NFTProjectData[] = [
     mintPrice: "0.08 ETH",
     status: "LIVE",
     slug: "ethereal-beings",
+    heroImage: "https://images.unsplash.com/photo-1617005082133-548c4dd27f35?w=1200&h=800&fit=crop",
+    gallery: [
+      { type: 'image', src: 'https://images.unsplash.com/photo-1634973357973-f2ed2657db3c?w=1200&h=800&fit=crop', alt: 'Collection overview' },
+      { type: 'image', src: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=1200&h=800&fit=crop', alt: 'Reveal animation' },
+      { type: 'image', src: 'https://images.unsplash.com/photo-1614728263952-84ea256f9679?w=1200&h=800&fit=crop', alt: 'Rarity tiers' },
+      { type: 'image', src: 'https://images.unsplash.com/photo-1635322966219-b75ed372eb01?w=1200&h=800&fit=crop', alt: '3D rendered beings' }
+    ],
+    artworkShowcase: [
+      {
+        title: "Character Design Philosophy",
+        description: "Each Ethereal Being is designed to represent different aspects of digital consciousness, from data streams to quantum entanglement.",
+        media: [
+          { type: 'image', src: 'https://images.unsplash.com/photo-1620641788421-7a1c342ea42e?w=1200&h=800&fit=crop', alt: 'Design sketches' },
+          { type: 'image', src: 'https://images.unsplash.com/photo-1633177317976-3f9bc45e1d1d?w=1200&h=800&fit=crop', alt: 'Digital refinement' }
+        ]
+      },
+      {
+        title: "Procedural Generation System",
+        description: "Advanced algorithmic generation ensuring true uniqueness across all 10,000 beings.",
+        media: [
+          { type: 'image', src: 'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=1200&h=800&fit=crop', alt: 'Generation algorithm demo' }
+        ]
+      }
+    ],
+    creationProcess: [
+      "Conceptual research into digital consciousness theories",
+      "Development of base character archetypes", 
+      "Creation of procedural generation algorithms",
+      "3D modeling and texturing of base components",
+      "Integration of rarity and trait systems"
+    ],
+    inspiration: "Inspired by theories of digital consciousness, quantum computing, and the philosophical question of what it means to exist in purely digital form.",
+    // Client-focused information
+    projectDuration: "4 months",
+    clientType: "NFT & Digital Art",
+    services: [
+      "NFT Collection Design & Development",
+      "Smart Contract Development",
+      "Community Building Strategy",
+      "Marketing & Launch Support"
+    ],
+    deliverables: [
+      "10,000 unique NFT artworks",
+      "Smart contract deployment",
+      "Metadata generation system",
+      "Community Discord setup",
+      "Marketing campaign materials"
+    ],
+    marketingStrategy: [
+      "Influencer partnerships in crypto space",
+      "Community building through Discord",
+      "Twitter Spaces and AMA sessions",
+      "Exclusive holder benefits program"
+    ],
+    communitySize: "15K+ Discord members",
+    testimonial: {
+      quote: "Working with this team was incredible. They understood our vision for digital consciousness and brought it to life in ways we never imagined. The collection sold out in 3 hours!",
+      author: "Alex Chen",
+      company: "Ethereal Studios"
+    },
     fullDescription: "Ethereal Beings represents a groundbreaking exploration of digital consciousness through generative art. Each NFT is a unique manifestation of an otherworldly entity, crafted using advanced 3D modeling techniques and algorithmic generation. The collection explores themes of digital transcendence, consciousness uploading, and the evolution of identity in virtual spaces.",
     rarity: {
       common: 6000,
