@@ -258,7 +258,7 @@
   overflow: hidden;
 }
 
-/* Style for the background viewer that holds the Spline component */
+/* Style for the background viewer that holds the Spline component or video */
 .backgroundViewer {
   position: absolute;
   top: 0;
@@ -268,6 +268,8 @@
   transition: opacity 1.2s ease-in-out, filter 1.5s cubic-bezier(0.25, 0.1, 0.25, 1);
   z-index: 0;
 }
+
+
 
 /* Clickable scene styling */
 .clickableScene {
@@ -402,10 +404,174 @@
   font-weight: 300;
   line-height: 1.4;
   color: rgba(255, 255, 255, 0.7);
-  margin: 0;
+  margin: 0 0 32px 0;
   max-width: 450px;
   letter-spacing: -0.01em;
   mix-blend-mode: difference;
+}
+
+/* Schedule Discovery Call Button */
+.scheduleButton {
+  font-family: 'Helvetica Neue', 'Helvetica', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  color: rgba(0, 0, 0, 0.9);
+  background: rgba(255, 255, 255, 0.95);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 12px;
+  padding: 14px 24px;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  box-shadow: 
+    0 8px 32px rgba(0, 0, 0, 0.3),
+    0 1px 0 rgba(255, 255, 255, 0.1);
+  position: relative;
+  overflow: hidden;
+  mix-blend-mode: difference;
+}
+
+.scheduleButton:hover {
+  background: rgba(255, 255, 255, 1);
+  transform: translateY(-2px);
+  box-shadow: 
+    0 12px 40px rgba(0, 0, 0, 0.4),
+    0 2px 0 rgba(255, 255, 255, 0.2);
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+.scheduleButton:active {
+  transform: translateY(0);
+  background: rgba(255, 255, 255, 0.9);
+  box-shadow: 
+    0 4px 16px rgba(0, 0, 0, 0.2),
+    inset 0 1px 0 rgba(0, 0, 0, 0.05);
+  transition: all 0.15s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.scheduleButton:focus {
+  outline: none;
+  box-shadow: 
+    0 12px 40px rgba(0, 0, 0, 0.4),
+    0 2px 0 rgba(255, 255, 255, 0.2),
+    0 0 0 3px rgba(255, 255, 255, 0.3);
+}
+
+/* NFT Content Styling */
+.nftContent .projectTitle {
+  background: linear-gradient(135deg, #ff6b6b, #4ecdc4, #45b7d1, #96ceb4);
+  background-size: 400% 400%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: gradientShift 8s ease-in-out infinite;
+}
+
+@keyframes gradientShift {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+.nftContent .projectDescription {
+  color: rgba(255, 255, 255, 0.8);
+  background: rgba(255, 255, 255, 0.05);
+  padding: 16px 20px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.nftMetadata {
+  margin: 24px 0;
+}
+
+.nftStats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.nftStat {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  background: rgba(255, 255, 255, 0.08);
+  padding: 12px 16px;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  transition: all 0.3s ease;
+}
+
+.nftStat:hover {
+  background: rgba(255, 255, 255, 0.12);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.statLabel {
+  font-size: 11px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.6);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.statValue {
+  font-size: 14px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.95);
+  letter-spacing: -0.01em;
+}
+
+.statusBadge {
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.statuslive {
+  background: rgba(52, 199, 89, 0.2);
+  color: rgba(52, 199, 89, 0.9);
+  border: 1px solid rgba(52, 199, 89, 0.3);
+}
+
+.statusupcoming {
+  background: rgba(255, 149, 0, 0.2);
+  color: rgba(255, 149, 0, 0.9);
+  border: 1px solid rgba(255, 149, 0, 0.3);
+}
+
+.statussoldout {
+  background: rgba(255, 69, 58, 0.2);
+  color: rgba(255, 69, 58, 0.9);
+  border: 1px solid rgba(255, 69, 58, 0.3);
+}
+
+.statusminting {
+  background: rgba(48, 209, 88, 0.2);
+  color: rgba(48, 209, 88, 0.9);
+  border: 1px solid rgba(48, 209, 88, 0.3);
+  animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { 
+    background: rgba(48, 209, 88, 0.2);
+    box-shadow: 0 0 0 0 rgba(48, 209, 88, 0.4);
+  }
+  50% { 
+    background: rgba(48, 209, 88, 0.3);
+    box-shadow: 0 0 0 4px rgba(48, 209, 88, 0.1);
+  }
 }
 
 /* Military mission briefing styling - Apple-like design */
@@ -820,6 +986,31 @@
     top: -30px;
   }
 
+  /* Toggle Mobile Styles */
+  .toggleContainer {
+    top: 20px;
+    left: 20px;
+  }
+
+  .projectToggle {
+    padding: 3px;
+    border-radius: 14px;
+  }
+
+  .toggleButton {
+    padding: 10px 16px;
+    font-size: 13px;
+  }
+
+  .nftStats {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+
+  .nftStat {
+    padding: 10px 12px;
+  }
+
   /* Social Media Island Mobile Styles */
   .socialsContainer {
     top: 20px;
@@ -1059,6 +1250,74 @@ a.secondary {
   transform: translateX(4px);
 }
 
+/* Project Type Toggle - Top Left */
+.toggleContainer {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  z-index: 20;
+  pointer-events: all;
+}
+
+.projectToggle {
+  position: relative;
+  display: flex;
+  background: rgba(16, 18, 20, 0.7);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  padding: 4px;
+  box-shadow: 
+    0 8px 32px rgba(0, 0, 0, 0.3),
+    0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+.toggleButton {
+  position: relative;
+  background: transparent;
+  border: none;
+  color: rgba(255, 255, 255, 0.6);
+  padding: 12px 20px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  border-radius: 12px;
+  z-index: 2;
+  letter-spacing: -0.01em;
+  font-family: inherit;
+  white-space: nowrap;
+}
+
+.toggleButton.active {
+  color: rgba(0, 0, 0, 0.9);
+}
+
+.toggleButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.toggleSlider {
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  width: calc(50% - 4px);
+  height: calc(100% - 8px);
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 12px;
+  transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  z-index: 1;
+  box-shadow: 
+    0 4px 12px rgba(0, 0, 0, 0.2),
+    0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+.toggleSlider.nftPosition {
+  transform: translateX(100%);
+}
+
 /* Social Media Island - Top Right */
 .socialsContainer {
   position: absolute;
@@ -1170,4 +1429,39 @@ a.secondary {
 /* Black screen effect for page transitions */
 .pageTransitionOverlay.blackScreen {
   background: rgba(0, 0, 0, 1);
+}
+
+/* Extra Small Mobile Responsive */
+@media (max-width: 480px) {
+  .toggleContainer {
+    top: 16px;
+    left: 12px;
+  }
+
+  .projectToggle {
+    padding: 3px;
+    border-radius: 12px;
+  }
+
+  .toggleButton {
+    padding: 8px 12px;
+    font-size: 12px;
+  }
+
+  .nftStats {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+
+  .nftStat {
+    padding: 8px 12px;
+  }
+
+  .statLabel {
+    font-size: 10px;
+  }
+
+  .statValue {
+    font-size: 13px;
+  }
 }

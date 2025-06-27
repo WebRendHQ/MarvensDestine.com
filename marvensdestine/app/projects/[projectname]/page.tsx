@@ -1,6 +1,7 @@
 import { notFound } from 'next/navigation';
-import { getProjectBySlug, getAllProjectSlugs } from '@/lib/projectData';
+import { getProjectBySlug, getAllProjectSlugs, getNFTProjectBySlug, getAllNFTProjectSlugs } from '@/lib/projectData';
 import ProjectPageClient from './ProjectPageClient';
+import NFTProjectPageClient from './NFTProjectPageClient';
 
 interface ProjectPageProps {
   params: Promise<{
@@ -9,8 +10,11 @@ interface ProjectPageProps {
 }
 
 export async function generateStaticParams() {
-  const slugs = getAllProjectSlugs();
-  return slugs.map((slug) => ({
+  const regularSlugs = getAllProjectSlugs();
+  const nftSlugs = getAllNFTProjectSlugs();
+  const allSlugs = [...regularSlugs, ...nftSlugs];
+  
+  return allSlugs.map((slug) => ({
     projectname: slug,
   }));
 }
@@ -18,26 +22,35 @@ export async function generateStaticParams() {
 export async function generateMetadata({ params }: ProjectPageProps) {
   const { projectname } = await params;
   const project = getProjectBySlug(projectname);
+  const nftProject = getNFTProjectBySlug(projectname);
   
-  if (!project) {
+  const foundProject = project || nftProject;
+  
+  if (!foundProject) {
     return {
       title: 'Project Not Found',
     };
   }
 
   return {
-    title: `${project.title} - Mission Briefing`,
-    description: project.description,
+    title: `${foundProject.title} - ${project ? 'Mission Briefing' : 'Collection Details'}`,
+    description: foundProject.description,
   };
 }
 
 export default async function ProjectPage({ params }: ProjectPageProps) {
   const { projectname } = await params;
   const project = getProjectBySlug(projectname);
+  const nftProject = getNFTProjectBySlug(projectname);
 
-  if (!project) {
+  if (!project && !nftProject) {
     notFound();
   }
 
-  return <ProjectPageClient project={project} />;
+  // Render appropriate client component based on project type
+  if (project) {
+    return <ProjectPageClient project={project} />;
+  } else {
+    return <NFTProjectPageClient project={nftProject!} />;
+  }
 } 

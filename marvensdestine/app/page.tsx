@@ -3,11 +3,8 @@
 import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import Spline from '@splinetool/react-spline';
-import { projectsData } from '@/lib/projectData';
+import { projectsData, nftProjectsData, ProjectType, ProjectData, NFTProjectData } from '@/lib/projectData';
 import styles from './page.module.css';
-
-// Extract just the scene URLs for the existing logic
-const splineScenes = projectsData.map(item => item.scene);
 
 // CodeLoader component to show a minimal Apple-like loading animation
 const CodeLoader = ({ onComplete }: { onComplete: () => void }) => {
@@ -61,8 +58,14 @@ export default function Home() {
   const [touchStart, setTouchStart] = useState(0);
   const [touchEnd, setTouchEnd] = useState(0);
   const [contentTransitioning, setContentTransitioning] = useState(false);
-  const [visibleContent, setVisibleContent] = useState(projectsData[0]);
+  const [projectType, setProjectType] = useState<ProjectType>('3d');
   const [loading, setLoading] = useState(true);
+  
+  // Get current projects based on selected type
+  const currentProjects = projectType === '3d' ? projectsData : nftProjectsData;
+  const [visibleContent, setVisibleContent] = useState<ProjectData | NFTProjectData>(currentProjects[0]);
+  
+
   
   // New states for scene transition effects
   const [sceneTransition, setSceneTransition] = useState({
@@ -104,7 +107,7 @@ export default function Home() {
     if (isTransitioning) return;
     
     // Wrap around if exceeding bounds
-    const newIndex = ((index % splineScenes.length) + splineScenes.length) % splineScenes.length;
+    const newIndex = ((index % currentProjects.length) + currentProjects.length) % currentProjects.length;
     
     if (newIndex !== activeIndex) {
       // Start transition effects - Phase 1: Fade out current scene
@@ -128,7 +131,7 @@ export default function Home() {
       // Actually switch the scene during peak darkness/blur
       setTimeout(() => {
         setActiveIndex(newIndex);
-        setVisibleContent(projectsData[newIndex]);
+        setVisibleContent(currentProjects[newIndex]);
         setSceneTransition(prev => ({
           ...prev,
           phase: 'fadeIn'
@@ -249,6 +252,51 @@ export default function Home() {
     loadedScenes.current[index] = true;
   };
 
+  // Handle project type switching
+  const handleProjectTypeSwitch = (newType: ProjectType) => {
+    if (newType !== projectType && !isTransitioning) {
+      setIsTransitioning(true);
+      setContentTransitioning(true);
+      
+      // Start transition effects
+      setSceneTransition({
+        blackScreen: true,
+        blur: true,
+        isActive: true,
+        phase: 'fadeOut'
+      });
+      
+      setTimeout(() => {
+        setProjectType(newType);
+        setActiveIndex(0);
+        const newProjects = newType === '3d' ? projectsData : nftProjectsData;
+        setVisibleContent(newProjects[0]);
+        
+        setSceneTransition(prev => ({
+          ...prev,
+          phase: 'fadeIn'
+        }));
+      }, 1000);
+      
+      // Complete transition
+      setTimeout(() => {
+        setSceneTransition({
+          blackScreen: false,
+          blur: false,
+          isActive: false,
+          phase: 'idle'
+        });
+        setContentTransitioning(false);
+        setIsTransitioning(false);
+      }, 2000);
+    }
+  };
+
+  // Update visible content when project type changes
+  useEffect(() => {
+    setVisibleContent(currentProjects[activeIndex] || currentProjects[0]);
+  }, [projectType, currentProjects, activeIndex]);
+
   return (
     <>
       {loading ? (
@@ -260,14 +308,16 @@ export default function Home() {
           onTouchMove={handleTouchMove}
           onTouchEnd={handleTouchEnd}
         >
-          {/* Spline Scenes */}
+          {/* Project Content (Videos or Spline Scenes) */}
           <div className={styles.scenesContainer}>
-            {splineScenes.map((scene, index) => {
+            {currentProjects.map((project, index) => {
               // Only render active scene and adjacent scenes for better performance
               const shouldRender = 
                 index === activeIndex || 
-                index === (activeIndex + 1) % splineScenes.length || 
-                index === ((activeIndex - 1 + splineScenes.length) % splineScenes.length);
+                index === (activeIndex + 1) % currentProjects.length || 
+                index === ((activeIndex - 1 + currentProjects.length) % currentProjects.length);
+
+
 
               // Build class names safely
               let sceneClasses = `${styles.backgroundViewer}`;
@@ -299,11 +349,11 @@ export default function Home() {
                       handleProjectClick();
                     }
                   } : undefined}
-                  aria-label={activeIndex === index ? `View ${projectsData[index].title} case study` : undefined}
+                  aria-label={activeIndex === index ? `View ${project.title} case study` : undefined}
                 >
-                  {shouldRender && (
+                  {shouldRender && project.scene && project.scene.trim() !== '' && (
                     <Spline 
-                      scene={scene} 
+                      scene={project.scene} 
                       onLoad={() => handleSceneLoad(index)}
                     />
                   )}
@@ -338,6 +388,27 @@ export default function Home() {
           
           {/* Curved FOV Container for UI Elements */}
           <div className={styles.curvedFOVContainer}>
+            {/* Project Type Toggle - Top Left */}
+            <div className={styles.toggleContainer}>
+              <div className={styles.projectToggle}>
+                <button
+                  className={`${styles.toggleButton} ${projectType === '3d' ? styles.active : ''}`}
+                  onClick={() => handleProjectTypeSwitch('3d')}
+                  disabled={isTransitioning}
+                >
+                  3D Projects
+                </button>
+                <button
+                  className={`${styles.toggleButton} ${projectType === 'nft' ? styles.active : ''}`}
+                  onClick={() => handleProjectTypeSwitch('nft')}
+                  disabled={isTransitioning}
+                >
+                  NFT Collections
+                </button>
+                <div className={`${styles.toggleSlider} ${projectType === 'nft' ? styles.nftPosition : ''}`} />
+              </div>
+            </div>
+
             {/* Social Media Island - Top Right */}
             <div className={styles.socialsContainer}>
               <div className={styles.socialsIsland}>
@@ -379,13 +450,47 @@ export default function Home() {
                   opacity: contentTransitioning ? 0 : 1
                 }}
               >
-                <div className={styles.minimalistContent}>
+                <div className={`${styles.minimalistContent} ${projectType === 'nft' ? styles.nftContent : ''}`}>
                   <h1 className={styles.projectTitle}>
                     {visibleContent.title}
                   </h1>
                   <p className={styles.projectDescription}>
                     {visibleContent.description}
                   </p>
+                  
+                  {/* NFT-specific metadata */}
+                  {projectType === 'nft' && (
+                    <div className={styles.nftMetadata}>
+                      <div className={styles.nftStats}>
+                        <span className={styles.nftStat}>
+                          <span className={styles.statLabel}>Supply:</span>
+                          <span className={styles.statValue}>{(visibleContent as NFTProjectData).collectionSize?.toLocaleString()}</span>
+                        </span>
+                        <span className={styles.nftStat}>
+                          <span className={styles.statLabel}>Blockchain:</span>
+                          <span className={styles.statValue}>{(visibleContent as NFTProjectData).blockchain}</span>
+                        </span>
+                        <span className={styles.nftStat}>
+                          <span className={styles.statLabel}>Price:</span>
+                          <span className={styles.statValue}>{(visibleContent as NFTProjectData).mintPrice}</span>
+                        </span>
+                        <span className={styles.nftStat}>
+                          <span className={styles.statLabel}>Status:</span>
+                          <span className={`${styles.statValue} ${styles.statusBadge} ${styles[`status${(visibleContent as NFTProjectData).status.replace(/\s+/g, '').toLowerCase()}`] || ''}`}>
+                            {(visibleContent as NFTProjectData).status}
+                          </span>
+                        </span>
+                      </div>
+                    </div>
+                  )}
+                  
+                  <button
+                    className={styles.scheduleButton}
+                    onClick={() => router.push('/discovery')}
+                    aria-label="Schedule Discovery Call"
+                  >
+                    Schedule Discovery Call
+                  </button>
                 </div>
               </div>
             </div>
@@ -394,7 +499,7 @@ export default function Home() {
             <div className={styles.controlsContainer}>
               <div className={styles.controls}>
                 <div className={styles.indicators}>
-                  {splineScenes.map((_, index) => (
+                  {currentProjects.map((_, index) => (
                     <button
                       key={index}
                       className={`${styles.indicator} ${activeIndex === index ? styles.activeIndicator : ''}`}

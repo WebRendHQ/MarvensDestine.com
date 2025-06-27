@@ -10,9 +10,13 @@
   },
   "dependencies": {
     "@splinetool/react-spline": "^4.0.0",
+    "@types/react-calendar": "^3.9.0",
+    "date-fns": "^4.1.0",
+    "googleapis": "^150.0.1",
     "marvensdestine": "file:",
     "next": "15.3.1",
     "react": "^19.0.0",
+    "react-calendar": "^6.0.0",
     "react-dom": "^19.0.0"
   },
   "devDependencies": {

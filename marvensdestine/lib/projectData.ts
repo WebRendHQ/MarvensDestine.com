@@ -1,5 +1,5 @@
 export interface ProjectData {
-  scene: string;
+  scene?: string;
   title: string;
   description: string;
   opCode: string;
@@ -29,6 +29,34 @@ export interface ProjectData {
     elevation: string;
   };
 }
+
+export interface NFTProjectData {
+  scene?: string;
+  title: string;
+  description: string;
+  collectionSize: number;
+  blockchain: string;
+  mintPrice: string;
+  status: string;
+  slug: string;
+  fullDescription?: string;
+  rarity?: {
+    common: number;
+    uncommon: number;
+    rare: number;
+    legendary: number;
+  };
+  utilities?: string[];
+  roadmap?: string[];
+  artistStatement?: string;
+  technicalSpecs?: {
+    format: string;
+    resolution: string;
+    metadata: string;
+  };
+}
+
+export type ProjectType = '3d' | 'nft';
 
 export const projectsData: ProjectData[] = [
   {
@@ -161,7 +189,6 @@ export const projectsData: ProjectData[] = [
     }
   },
   {
-    scene: "https://prod.spline.design/rNSu9VRHiYbIR5lg/scene.splinecode",
     title: "Vital Element",
     description: "First visualization of the Element pod, sparking investor interest amongst the chaotic tech startup scene.",
     opCode: "OB-42780",
@@ -209,6 +236,162 @@ export const getProjectBySlug = (slug: string): ProjectData | undefined => {
   return projectsData.find(project => project.slug === slug);
 };
 
+// NFT Collections Data
+export const nftProjectsData: NFTProjectData[] = [
+  {
+    scene: "",
+    title: "Ethereal Beings",
+    description: "A collection of 10,000 unique digital entities exploring the intersection of consciousness and digital existence.",
+    collectionSize: 10000,
+    blockchain: "Ethereum",
+    mintPrice: "0.08 ETH",
+    status: "LIVE",
+    slug: "ethereal-beings",
+    fullDescription: "Ethereal Beings represents a groundbreaking exploration of digital consciousness through generative art. Each NFT is a unique manifestation of an otherworldly entity, crafted using advanced 3D modeling techniques and algorithmic generation. The collection explores themes of digital transcendence, consciousness uploading, and the evolution of identity in virtual spaces.",
+    rarity: {
+      common: 6000,
+      uncommon: 3000,
+      rare: 800,
+      legendary: 200
+    },
+    utilities: [
+      "Exclusive access to virtual gallery exhibitions",
+      "Voting rights in community governance",
+      "Early access to future collections",
+      "3D model downloads for personal use",
+      "Virtual world avatar integration"
+    ],
+    roadmap: [
+      "Q1 2024: Launch virtual gallery space",
+      "Q2 2024: Community DAO formation",
+      "Q3 2024: AR/VR integration",
+      "Q4 2024: Physical art installations"
+    ],
+    artistStatement: "Through Ethereal Beings, I explore the liminal space between digital and physical consciousness, questioning what it means to exist in purely digital form.",
+    technicalSpecs: {
+      format: "MP4 + GLB",
+      resolution: "4K (3840x2160)",
+      metadata: "ERC-721 Standard"
+    }
+  },
+  {
+    scene: "https://prod.spline.design/d3ny-zHKaeUwslBx/scene.splinecode",
+    title: "Cyber Citadels",
+    description: "Architectural NFTs depicting futuristic cityscapes and megastructures in a post-digital world.",
+    collectionSize: 5555,
+    blockchain: "Polygon",
+    mintPrice: "50 MATIC",
+    status: "UPCOMING",
+    slug: "cyber-citadels",
+    fullDescription: "Cyber Citadels is an architectural journey through speculative urban futures. Each NFT represents a unique megastructure or cityscape, designed with photorealistic detail and inspired by cyberpunk aesthetics. The collection serves as both art and commentary on urban development in the digital age.",
+    rarity: {
+      common: 3000,
+      uncommon: 1800,
+      rare: 555,
+      legendary: 200
+    },
+    utilities: [
+      "Virtual land ownership in metaverse",
+      "Architectural blueprint downloads",
+      "Community building contests",
+      "Exclusive architect interviews",
+      "Physical model 3D printing files"
+    ],
+    roadmap: [
+      "Q2 2024: Collection launch",
+      "Q3 2024: Metaverse integration",
+      "Q4 2024: Physical exhibition",
+      "Q1 2025: Interactive city builder"
+    ],
+    artistStatement: "Cyber Citadels imagines how our cities might evolve in response to technological advancement and climate change, creating spaces that are both beautiful and functional.",
+    technicalSpecs: {
+      format: "PNG + 3D Model",
+      resolution: "8K (7680x4320)",
+      metadata: "ERC-1155 Standard"
+    }
+  },
+  {
+    scene: "https://prod.spline.design/rNSu9VRHiYbIR5lg/scene.splinecode",
+    title: "Temporal Fragments",
+    description: "Abstract time-based NFTs that evolve and change based on blockchain timestamps and market conditions.",
+    collectionSize: 2222,
+    blockchain: "Solana",
+    mintPrice: "2.5 SOL",
+    status: "SOLD OUT",
+    slug: "temporal-fragments",
+    fullDescription: "Temporal Fragments pushes the boundaries of what NFTs can be by creating artworks that exist in constant flux. Each piece evolves based on real-world data including time, weather, market conditions, and blockchain activity. No two viewings are ever the same, making each NFT a living, breathing artwork.",
+    rarity: {
+      common: 1000,
+      uncommon: 800,
+      rare: 333,
+      legendary: 89
+    },
+    utilities: [
+      "Dynamic artwork that changes over time",
+      "Market data visualization dashboard",
+      "Collector analytics tools",
+      "Priority access to time-based drops",
+      "Custom temporal algorithm creation"
+    ],
+    roadmap: [
+      "COMPLETE: Initial mint and algorithm launch",
+      "COMPLETE: Community analytics dashboard",
+      "Q3 2024: Advanced temporal mechanics",
+      "Q4 2024: Cross-chain integration"
+    ],
+    artistStatement: "Time is the ultimate medium. Temporal Fragments explores how digital art can exist not as static objects, but as processes that unfold through duration.",
+    technicalSpecs: {
+      format: "Dynamic WebGL",
+      resolution: "Scalable Vector",
+      metadata: "Metaplex Standard"
+    }
+  },
+  {
+    scene: "https://prod.spline.design/A7zppi2sIzSoYEOx/scene.splinecode",
+    title: "Biomech Evolution",
+    description: "Organic-mechanical hybrid creatures that showcase the fusion of biological and technological aesthetics.",
+    collectionSize: 7777,
+    blockchain: "Ethereum",
+    mintPrice: "0.12 ETH",
+    status: "MINTING",
+    slug: "biomech-evolution",
+    fullDescription: "Biomech Evolution explores the convergence of organic life and mechanical precision. Each NFT features a unique creature that seamlessly blends biological forms with technological enhancements. The collection questions the boundaries between natural and artificial, organic and synthetic.",
+    rarity: {
+      common: 4000,
+      uncommon: 2500,
+      rare: 1000,
+      legendary: 277
+    },
+    utilities: [
+      "Breeding mechanics for new combinations",
+      "Game integration as playable characters",
+      "Evolution tracking and genealogy",
+      "Scientific collaboration partnerships",
+      "Biotech research fund contributions"
+    ],
+    roadmap: [
+      "Q3 2024: Breeding system launch",
+      "Q4 2024: Gaming partnerships",
+      "Q1 2025: Scientific collaborations",
+      "Q2 2025: Real-world bio-art installations"
+    ],
+    artistStatement: "As technology becomes increasingly biological and biology becomes increasingly technological, Biomech Evolution imagines the aesthetic possibilities of this convergence.",
+    technicalSpecs: {
+      format: "MP4 + Interactive 3D",
+      resolution: "4K (3840x2160)",
+      metadata: "ERC-721A Standard"
+    }
+  }
+];
+
 export const getAllProjectSlugs = (): string[] => {
   return projectsData.map(project => project.slug);
+};
+
+export const getAllNFTProjectSlugs = (): string[] => {
+  return nftProjectsData.map(project => project.slug);
+};
+
+export const getNFTProjectBySlug = (slug: string): NFTProjectData | undefined => {
+  return nftProjectsData.find(project => project.slug === slug);
 }; 

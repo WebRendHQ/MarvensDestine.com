@@ -19,6 +19,27 @@
   z-index: 0;
 }
 
+/* Fallback Background */
+.fallbackBackground {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.gradientBackground {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f0f23 100%);
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
 /* Content overlay */
 .contentOverlay {
   position: absolute;
@@ -145,6 +166,31 @@
   background: rgba(255, 69, 58, 0.15);
   color: #FF453A;
   border: 1px solid rgba(255, 69, 58, 0.2);
+}
+
+/* NFT-specific status badges */
+.statusBadge[data-status="live"] {
+  background: rgba(52, 199, 89, 0.15);
+  color: #34C759;
+  border: 1px solid rgba(52, 199, 89, 0.2);
+}
+
+.statusBadge[data-status="upcoming"] {
+  background: rgba(0, 122, 255, 0.15);
+  color: #007AFF;
+  border: 1px solid rgba(0, 122, 255, 0.2);
+}
+
+.statusBadge[data-status="sold out"] {
+  background: rgba(255, 204, 0, 0.15);
+  color: #FFCC00;
+  border: 1px solid rgba(255, 204, 0, 0.2);
+}
+
+.statusBadge[data-status="minting"] {
+  background: rgba(175, 82, 222, 0.15);
+  color: #AF52DE;
+  border: 1px solid rgba(175, 82, 222, 0.2);
 }
 
 /* Section styling */
@@ -502,4 +548,161 @@
   .section {
     padding: 20px 15px;
   }
+}
+
+/* Rarity Distribution Grid */
+.rarityGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 40px;
+  margin-top: 40px;
+}
+
+.rarityCard {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.02));
+  border-radius: 16px;
+  padding: 32px 24px;
+  text-align: center;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.rarityCard:hover {
+  transform: translateY(-2px);
+  border-color: rgba(255, 255, 255, 0.15);
+}
+
+.rarityLabel {
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 1.2px;
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Helvetica Neue', system-ui, sans-serif;
+  font-weight: 600;
+  margin-bottom: 12px;
+}
+
+.rarityValue {
+  color: rgba(255, 255, 255, 0.95);
+  font-size: 24px;
+  font-weight: 300;
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Helvetica Neue', system-ui, sans-serif;
+  letter-spacing: -0.01em;
+  margin-bottom: 8px;
+}
+
+.rarityPercentage {
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 14px;
+  font-weight: 500;
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Helvetica Neue', system-ui, sans-serif;
+}
+
+/* Utilities List */
+.utilitiesList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.utility {
+  display: flex;
+  align-items: flex-start;
+  margin-bottom: 24px;
+  font-size: 18px;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.85);
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Helvetica Neue', system-ui, sans-serif;
+  font-weight: 300;
+  letter-spacing: -0.005em;
+}
+
+.utilityBullet {
+  color: rgba(255, 255, 255, 0.4);
+  font-size: 20px;
+  font-weight: 700;
+  margin-right: 16px;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+/* Roadmap List */
+.roadmapList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.roadmapItem {
+  display: flex;
+  align-items: flex-start;
+  margin-bottom: 32px;
+  font-size: 18px;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.85);
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Helvetica Neue', system-ui, sans-serif;
+  font-weight: 300;
+  letter-spacing: -0.005em;
+}
+
+.roadmapNumber {
+  color: rgba(255, 255, 255, 0.4);
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Helvetica Neue', system-ui, sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  margin-right: 20px;
+  min-width: 32px;
+  text-align: right;
+  flex-shrink: 0;
+}
+
+/* Artist Statement */
+.artistStatement {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.02));
+  border-radius: 20px;
+  padding: 32px;
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 18px;
+  line-height: 1.6;
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Helvetica Neue', system-ui, sans-serif;
+  font-weight: 300;
+  letter-spacing: -0.005em;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  font-style: italic;
+}
+
+/* Technical Specs */
+.technicalSpecs {
+  space-y: 24px;
+}
+
+.specItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.specLabel {
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Helvetica Neue', system-ui, sans-serif;
+  font-weight: 600;
+  min-width: 120px;
+}
+
+.specValue {
+  color: rgba(255, 255, 255, 0.95);
+  font-size: 18px;
+  font-weight: 400;
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Helvetica Neue', system-ui, sans-serif;
+  letter-spacing: -0.005em;
+  text-align: right;
+  flex: 1;
 } 

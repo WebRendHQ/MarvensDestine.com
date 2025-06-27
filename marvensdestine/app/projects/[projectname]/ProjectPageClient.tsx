@@ -59,7 +59,13 @@ export default function ProjectPageClient({ project }: ProjectPageClientProps) {
           transition: 'filter 1s cubic-bezier(0.25, 0.1, 0.25, 1)'
         }}
       >
-        <Spline scene={project.scene} />
+        {project.scene && project.scene.trim() !== '' ? (
+          <Spline scene={project.scene} />
+        ) : (
+          <div className={styles.fallbackBackground}>
+            <div className={styles.gradientBackground} />
+          </div>
+        )}
       </div>
 
       {/* Page Transition Overlay */}
