@@ -1,11 +1,18 @@
 'use client';
 
 import { useState, useRef } from 'react';
-import { MediaItem } from '@/lib/projectData';
+// Accept flexible media from Firestore: { type, src | url, alt, caption }
+type FlexMediaItem = {
+  type: 'image' | 'video';
+  src?: string;
+  url?: string;
+  alt?: string;
+  caption?: string;
+};
 import styles from './MediaGallery.module.css';
 
 interface MediaGalleryProps {
-  items: MediaItem[];
+  items: FlexMediaItem[];
   className?: string;
 }
 
@@ -44,7 +51,9 @@ export default function MediaGallery({ items, className = '' }: MediaGalleryProp
   return (
     <>
       <div className={`${styles.gallery} ${className}`}>
-        {items.map((item, index) => (
+        {items.map((item, index) => {
+          const mediaSrc = item.src || item.url || '';
+          return (
           <div
             key={index}
             className={styles.galleryItem}
@@ -53,7 +62,7 @@ export default function MediaGallery({ items, className = '' }: MediaGalleryProp
             {item.type === 'image' ? (
               <div className={styles.imageContainer}>
                 <img
-                  src={item.src}
+                  src={mediaSrc}
                   alt={item.alt || ''}
                   className={styles.media}
                   loading="lazy"
@@ -66,7 +75,7 @@ export default function MediaGallery({ items, className = '' }: MediaGalleryProp
               <div className={styles.videoContainer}>
                 <video
                   ref={handleVideoRef(index)}
-                  src={item.src}
+                  src={mediaSrc}
                   className={styles.media}
                   muted
                   loop
@@ -90,7 +99,7 @@ export default function MediaGallery({ items, className = '' }: MediaGalleryProp
               <div className={styles.caption}>{item.caption}</div>
             )}
           </div>
-        ))}
+        );})}
       </div>
 
       {/* Lightbox */}
@@ -116,13 +125,13 @@ export default function MediaGallery({ items, className = '' }: MediaGalleryProp
             <div className={styles.lightboxMedia}>
               {items[currentIndex].type === 'image' ? (
                 <img
-                  src={items[currentIndex].src}
+                  src={(items[currentIndex].src || items[currentIndex].url) as string}
                   alt={items[currentIndex].alt || ''}
                   className={styles.lightboxImage}
                 />
               ) : (
                 <video
-                  src={items[currentIndex].src}
+                  src={(items[currentIndex].src || items[currentIndex].url) as string}
                   className={styles.lightboxVideo}
                   controls
                   autoPlay

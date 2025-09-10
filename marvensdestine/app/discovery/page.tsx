@@ -83,14 +83,57 @@ export default function DiscoveryPage() {
   };
 
   useEffect(() => {
-    const slots = generateTimeSlots();
-    setTimeSlots(slots);
-    
-    // Auto-select the first available time slot
-    const firstAvailable = slots.find(slot => slot.available);
-    if (firstAvailable) {
-      setSelectedTime(firstAvailable.time);
-    }
+    const init = async () => {
+      try {
+        // Ask server for earliest available free/busy slot
+        const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+        const resp = await fetch('/api/calendar/freebusy', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ timeZone: tz, startHour: 9, endHour: 18, slotMinutes: 60, daysAhead: 14 })
+        });
+        if (!resp.ok) {
+          const errText = await resp.text();
+          // Surface server error details in dev console for debugging
+          // (Endpoint does not expose secrets; it returns only messages)
+          console.error('freebusy failed', resp.status, errText);
+          throw new Error(`freebusy ${resp.status}`);
+        }
+        const data = await resp.json();
+
+        if (data?.earliest?.start && data?.earliest?.end) {
+          const start = new Date(data.earliest.start);
+          const newDate = startOfDay(start);
+          setSelectedDate(newDate);
+
+          // Build slots for that date only, marking selected
+          const startHour = 9;
+          const endHour = 18;
+          const slots: TimeSlot[] = [];
+          for (let hour = startHour; hour < endHour; hour++) {
+            const slotTime = new Date(newDate);
+            slotTime.setHours(hour, 0, 0, 0);
+            const available = slotTime.getTime() === start.getTime();
+            slots.push({ time: format(slotTime, 'h:mm a'), available: available || slotTime > new Date(), date: slotTime });
+          }
+          setTimeSlots(slots);
+          setSelectedTime(format(start, 'h:mm a'));
+          return;
+        }
+
+        // Fallback to local generation if API unavailable/no availability
+        const localSlots = generateTimeSlots();
+        setTimeSlots(localSlots);
+        const firstAvailable = localSlots.find(slot => slot.available);
+        if (firstAvailable) setSelectedTime(firstAvailable.time);
+      } catch {
+        const localSlots = generateTimeSlots();
+        setTimeSlots(localSlots);
+        const firstAvailable = localSlots.find(slot => slot.available);
+        if (firstAvailable) setSelectedTime(firstAvailable.time);
+      }
+    };
+    void init();
   }, []);
 
   // Handle form input changes
@@ -429,7 +472,7 @@ export default function DiscoveryPage() {
             <div className={styles.largeCheckmark}>✓</div>
             <h2>All Set!</h2>
             <p>
-              Thanks for scheduling your discovery call. We'll be in touch via email with additional details and a calendar invite.
+              Thanks for scheduling your discovery call. We&apos;ll be in touch via email with additional details and a calendar invite.
             </p>
             <div className={styles.meetingDetails}>
               <h4>Meeting Details:</h4>

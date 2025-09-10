@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 import Link from 'next/link';
 import Spline from '@splinetool/react-spline';
 import { ProjectData } from '@/lib/projectData';
@@ -11,43 +11,10 @@ interface ProjectPageClientProps {
 }
 
 export default function ProjectPageClient({ project }: ProjectPageClientProps) {
-  const [pageTransition, setPageTransition] = useState({
-    blackScreen: true,
-    blur: true,
-    isActive: true
-  });
+  // Page transition handled globally; local state not needed
 
   // Handle page fade-in effect
-  useEffect(() => {
-    // Start fade-in after component mounts
-    const timer1 = setTimeout(() => {
-      setPageTransition(prev => ({
-        ...prev,
-        blackScreen: false
-      }));
-    }, 300);
-
-    const timer2 = setTimeout(() => {
-      setPageTransition(prev => ({
-        ...prev,
-        blur: false
-      }));
-    }, 600);
-
-    const timer3 = setTimeout(() => {
-      setPageTransition({
-        blackScreen: false,
-        blur: false,
-        isActive: false
-      });
-    }, 1200);
-
-    return () => {
-      clearTimeout(timer1);
-      clearTimeout(timer2);
-      clearTimeout(timer3);
-    };
-  }, []);
+  useEffect(() => {}, []);
 
   const handleBackgroundClick = (e: React.MouseEvent) => {
     if (e.target === e.currentTarget) {
@@ -55,323 +22,138 @@ export default function ProjectPageClient({ project }: ProjectPageClientProps) {
     }
   };
 
+  const getMediaSrc = (s?: string) => s || '';
+  const hero = project.heroImage || '';
+
   return (
-    <main className={styles.container} onClick={handleBackgroundClick}>
-      <div className={styles.modalContent}>
-        {/* Spline Background */}
-        <div 
-          className={styles.backgroundViewer}
-          style={{
-            filter: pageTransition.blur ? 'blur(60px)' : 'blur(20px)',
-            transition: 'filter 1s cubic-bezier(0.25, 0.1, 0.25, 1)'
-          }}
-        >
+    <main className={styles.brutWrap} onClick={handleBackgroundClick}>
+      <header className={styles.brutHeader}>
+        <Link href="/portfolio" className={styles.brutBack}>← Back</Link>
+        <div className={styles.brutTag}>3D Project</div>
+      </header>
+      <div className={styles.brutMain}>
+        <h1 className={styles.brutTitle}>{project.title}</h1>
+        <p className={styles.brutDesc}>{project.fullDescription || project.description}</p>
+
+        {/* Hero / Scene */}
+        <section className={styles.brutHero}>
           {project.scene && project.scene.trim() !== '' ? (
             <Spline scene={project.scene} />
-          ) : (
-            <div className={styles.fallbackBackground}>
-              <div className={styles.gradientBackground} />
+          ) : hero ? (
+            hero.match(/\.(mp4|webm|mov)(\?.*)?$/i) ? (
+              <video src={getMediaSrc(hero)} className={styles.brutMedia} autoPlay muted loop playsInline />
+            ) : (
+              <img src={getMediaSrc(hero)} alt={project.title} className={styles.brutMedia} />
+            )
+          ) : null}
+        </section>
+
+        {/* Meta grid */}
+        <section className={styles.brutMeta}>
+          {project.projectDuration && (
+            <div className={styles.brutCell}>
+              <div className={styles.brutLabel}>Duration</div>
+              <div className={styles.brutValue}>{project.projectDuration}</div>
             </div>
           )}
-        </div>
-
-        {/* Page Transition Overlay */}
-        {pageTransition.isActive && (
-          <div 
-            className={`${styles.pageTransitionOverlay} ${
-              pageTransition.blackScreen ? styles.blackScreen : ''
-            }`}
-          />
-        )}
-
-        {/* Content Overlay */}
-        <div 
-          className={styles.contentOverlay}
-          style={{
-            opacity: pageTransition.isActive ? 0 : 1,
-            transition: 'opacity 0.8s cubic-bezier(0.25, 0.1, 0.25, 1) 0.4s'
-          }}
-        >
-        {/* Header Navigation */}
-        <header className={styles.header}>
-          <Link href="/" className={styles.backButton}>
-            ← BACK TO PORTFOLIO
-          </Link>
-          <div className={styles.classification}>
-            3D PROJECT
-          </div>
-        </header>
-
-        {/* Main Content */}
-        <div className={styles.behanceContent}>
-          {/* First hero media */}
-          {project.gallery && project.gallery.length > 0 && (
-            <div className={styles.mediaItem}>
-              {project.gallery[0].type === 'image' ? (
-                <img
-                  src={project.gallery[0].src}
-                  alt={project.gallery[0].alt || ''}
-                  className={styles.fullWidthImage}
-                />
-              ) : (
-                <video
-                  src={project.gallery[0].src}
-                  className={styles.fullWidthVideo}
-                  controls
-                  playsInline
-                />
-              )}
+          {project.budget && (
+            <div className={styles.brutCell}>
+              <div className={styles.brutLabel}>Budget</div>
+              <div className={styles.brutValue}>{project.budget}</div>
             </div>
           )}
-
-          {/* Project title and description */}
-          <div className={styles.textSection}>
-            <h1 className={styles.projectTitle}>{project.title}</h1>
-            <p className={styles.projectDescription}>
-              {project.fullDescription || project.description}
-            </p>
-            
-            {project.technologies && (
-              <div className={styles.techList}>
-                <span className={styles.techLabel}>Technologies:</span>
-                <span className={styles.techText}>{project.technologies.join(', ')}</span>
-              </div>
-            )}
-          </div>
-
-          {/* Remaining gallery media interspersed with process */}
-          {project.gallery && project.gallery.length > 1 && (
-            <>
-              {/* Second media item */}
-              <div className={styles.mediaItem}>
-                {project.gallery[1].type === 'image' ? (
-                  <img
-                    src={project.gallery[1].src}
-                    alt={project.gallery[1].alt || ''}
-                    className={styles.fullWidthImage}
-                  />
-                ) : (
-                  <video
-                    src={project.gallery[1].src}
-                    className={styles.fullWidthVideo}
-                    controls
-                    playsInline
-                  />
-                )}
-              </div>
-            </>
-          )}
-
-          {/* Process sections with media */}
-          {project.process && project.process.length > 0 && (
-            <>
-              {project.process.map((step, index) => (
-                <div key={index} className={styles.processBlock}>
-                  {/* Process text */}
-                  <div className={styles.textSection}>
-                    <h3 className={styles.processTitle}>{step.title}</h3>
-                    <p className={styles.processDescription}>{step.description}</p>
-                  </div>
-                  
-                  {/* Process media */}
-                  {step.media && step.media.length > 0 && (
-                    <div className={styles.processMedia}>
-                      {step.media.map((media, mediaIndex) => (
-                        <div key={mediaIndex} className={styles.mediaItem}>
-                          {media.type === 'image' ? (
-                            <img
-                              src={media.src}
-                              alt={media.alt || ''}
-                              className={styles.fullWidthImage}
-                            />
-                          ) : (
-                            <video
-                              src={media.src}
-                              className={styles.fullWidthVideo}
-                              controls
-                              playsInline
-                            />
-                          )}
-                        </div>
-                      ))}
-                    </div>
-                  )}
-
-                  {/* Intersperse remaining gallery items */}
-                  {project.gallery && project.gallery.length > index + 2 && (
-                    <div className={styles.mediaItem}>
-                      {project.gallery[index + 2].type === 'image' ? (
-                        <img
-                          src={project.gallery[index + 2].src}
-                          alt={project.gallery[index + 2].alt || ''}
-                          className={styles.fullWidthImage}
-                        />
-                      ) : (
-                        <video
-                          src={project.gallery[index + 2].src}
-                          className={styles.fullWidthVideo}
-                          controls
-                          playsInline
-                        />
-                      )}
-                    </div>
-                  )}
-                </div>
-              ))}
-            </>
-          )}
-
-          {/* Project Meta Information */}
-          <div className={styles.textSection}>
-            <div className={styles.projectMeta}>
-              {project.projectDuration && (
-                <div className={styles.metaItem}>
-                  <span className={styles.metaValue}>{project.projectDuration}</span>
-                  <span className={styles.metaLabel}>Duration</span>
-                </div>
-              )}
-              {project.budget && (
-                <div className={styles.metaItem}>
-                  <span className={styles.metaValue}>{project.budget}</span>
-                  <span className={styles.metaLabel}>Budget Range</span>
-                </div>
-              )}
-              {project.clientType && (
-                <div className={styles.metaItem}>
-                  <span className={styles.metaValue}>{project.clientType}</span>
-                  <span className={styles.metaLabel}>Industry</span>
-                </div>
-              )}
-            </div>
-          </div>
-
-          {/* Services Provided */}
-          {project.services && (
-            <div className={styles.textSection}>
-              <h4 className={styles.sectionTitle}>Services Provided</h4>
-              <ul className={styles.servicesList}>
-                {project.services.map((service, index) => (
-                  <li key={index} className={styles.serviceItem}>
-                    {service}
-                  </li>
-                ))}
-              </ul>
+          {project.clientType && (
+            <div className={styles.brutCell}>
+              <div className={styles.brutLabel}>Client</div>
+              <div className={styles.brutValue}>{project.clientType}</div>
             </div>
           )}
-
-          {/* Key Deliverables */}
-          {project.deliverables && (
-            <div className={styles.textSection}>
-              <h4 className={styles.sectionTitle}>Key Deliverables</h4>
-              <ul className={styles.deliverablesList}>
-                {project.deliverables.map((deliverable, index) => (
-                  <li key={index} className={styles.deliverableItem}>
-                    {deliverable}
-                  </li>
-                ))}
-              </ul>
+          {project.technologies?.length ? (
+            <div className={styles.brutCell}>
+              <div className={styles.brutLabel}>Tech</div>
+              <div className={styles.brutValue}>{project.technologies.join(', ')}</div>
             </div>
-          )}
+          ) : null}
+        </section>
 
-          {/* Challenges & Solutions */}
-          {(project.challenges || project.solutions) && (
-            <div className={styles.textSection}>
-              {project.challenges && (
-                <div className={styles.clientSection}>
-                  <h4 className={styles.sectionTitle}>Challenges</h4>
-                  <ul className={styles.challengesList}>
-                    {project.challenges.map((challenge, index) => (
-                      <li key={index} className={styles.challengeItem}>
-                        {challenge}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              )}
-              
-              {project.solutions && (
-                <div className={styles.clientSection}>
-                  <h4 className={styles.sectionTitle}>Solutions</h4>
-                  <ul className={styles.solutionsList}>
-                    {project.solutions.map((solution, index) => (
-                      <li key={index} className={styles.solutionItem}>
-                        {solution}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              )}
-            </div>
-          )}
-
-          {/* Results */}
-          {project.results && (
-            <div className={styles.textSection}>
-              <h4 className={styles.resultsTitle}>Results & Impact</h4>
-              <ul className={styles.results}>
-                {project.results.map((result, index) => (
-                  <li key={index} className={styles.resultItem}>
-                    {result}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
-
-          {/* Client Testimonial */}
-          {project.testimonial && (
-            <div className={styles.testimonial}>
-              <div className={styles.testimonialQuote}>"{project.testimonial.quote}"</div>
-              <div className={styles.testimonialAuthor}>{project.testimonial.author}</div>
-              <div className={styles.testimonialCompany}>{project.testimonial.company}</div>
-            </div>
-          )}
-
-          {/* Any remaining gallery items */}
-          {project.gallery && project.gallery.length > 2 && project.process && (
-            <>
-              {project.gallery.slice(2 + (project.process?.length || 0)).map((item, index) => (
-                <div key={index + 2 + (project.process?.length || 0)} className={styles.mediaItem}>
-                  {item.type === 'image' ? (
-                    <img
-                      src={item.src}
-                      alt={item.alt || ''}
-                      className={styles.fullWidthImage}
-                    />
+        {/* Gallery simple grid */}
+        {project.gallery?.length ? (
+          <section className={styles.brutSection}>
+            <h4 className={styles.brutH4}>Gallery</h4>
+            <div className={styles.brutGrid}>
+              {project.gallery.map((m, i)=> (
+                <div key={i} className={styles.brutCard}>
+                  {m.type === 'video' ? (
+                    <video src={m.src as string} className={styles.brutMedia} controls playsInline />
                   ) : (
-                    <video
-                      src={item.src}
-                      className={styles.fullWidthVideo}
-                      controls
-                      playsInline
-                    />
+                    <img src={m.src as string} className={styles.brutMedia} alt={m.alt || ''} />
                   )}
                 </div>
               ))}
-            </>
-          )}
-
-          {/* Project Footer */}
-          <div className={styles.projectFooter}>
-            <h3 className={styles.footerTitle}>Ready to Start Your Project?</h3>
-            <p className={styles.footerDescription}>
-              Let's collaborate to bring your vision to life with cutting-edge 3D visualization and interactive experiences.
-            </p>
-            <div className={styles.footerActions}>
-              <a href="mailto:hello@marvensdestine.com" className={`${styles.footerButton} ${styles.primary}`}>
-                Start a Project
-              </a>
-              <a href="/" className={styles.footerButton}>
-                View More Work
-              </a>
             </div>
-          </div>
-        </div>
-      </div>
+          </section>
+        ) : null}
 
-        {/* Screen Effects */}
-        <div className={styles.scanlines}></div>
-        <div className={styles.vignette}></div>
+        {/* Copy sections */}
+        {project.services?.length ? (
+          <section className={styles.brutSection}>
+            <h4 className={styles.brutH4}>Services</h4>
+            <ul className={styles.brutList}>
+              {project.services.map((s,i)=> <li key={i} className={styles.brutItem}>{s}</li>)}
+            </ul>
+          </section>
+        ) : null}
+
+        {project.deliverables?.length ? (
+          <section className={styles.brutSection}>
+            <h4 className={styles.brutH4}>Deliverables</h4>
+            <ul className={styles.brutList}>
+              {project.deliverables.map((s,i)=> <li key={i} className={styles.brutItem}>{s}</li>)}
+            </ul>
+          </section>
+        ) : null}
+
+        {(project.challenges?.length || project.solutions?.length) ? (
+          <section className={styles.brutSection}>
+            <h4 className={styles.brutH4}>Challenges / Solutions</h4>
+            <div className={styles.brutGrid}>
+              {project.challenges?.length ? (
+                <div className={styles.brutCard}>
+                  <h4 className={styles.brutH4}>Challenges</h4>
+                  <ul className={styles.brutList}>{project.challenges.map((c,i)=> <li key={i} className={styles.brutItem}>{c}</li>)}</ul>
+                </div>
+              ) : null}
+              {project.solutions?.length ? (
+                <div className={styles.brutCard}>
+                  <h4 className={styles.brutH4}>Solutions</h4>
+                  <ul className={styles.brutList}>{project.solutions.map((c,i)=> <li key={i} className={styles.brutItem}>{c}</li>)}</ul>
+                </div>
+              ) : null}
+            </div>
+          </section>
+        ) : null}
+
+        {project.results?.length ? (
+          <section className={styles.brutSection}>
+            <h4 className={styles.brutH4}>Results</h4>
+            <ul className={styles.brutList}>{project.results.map((r,i)=> <li key={i} className={styles.brutItem}>{r}</li>)}</ul>
+          </section>
+        ) : null}
+
+        {project.testimonial ? (
+          <section className={styles.brutSection}>
+            <h4 className={styles.brutH4}>Testimonial</h4>
+            <div style={{ fontStyle:'italic', color:'#cfcfcf' }}>&quot;{project.testimonial.quote}&quot;</div>
+            <div style={{ marginTop:6, color:'#a9a9a9' }}>{project.testimonial.author} · {project.testimonial.company}</div>
+          </section>
+        ) : null}
+
+        <section className={styles.brutSection}>
+          <div className={styles.brutGrid}>
+            <a href="mailto:hello@marvensdestine.com" className={styles.brutCard}>Start a Project</a>
+            <Link href="/" className={styles.brutCard}>View More Work</Link>
+          </div>
+        </section>
       </div>
     </main>
   );

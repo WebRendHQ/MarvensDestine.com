@@ -12,9 +12,12 @@
     "@splinetool/react-spline": "^4.0.0",
     "@types/react-calendar": "^3.9.0",
     "date-fns": "^4.1.0",
+    "firebase": "^12.2.1",
+    "firebase-admin": "^13.5.0",
+    "framer-motion": "^12.23.12",
     "googleapis": "^150.0.1",
     "marvensdestine": "file:",
-    "next": "15.3.1",
+    "next": "^15.5.2",
     "react": "^19.0.0",
     "react-calendar": "^6.0.0",
     "react-dom": "^19.0.0"

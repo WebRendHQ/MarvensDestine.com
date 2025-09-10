@@ -1,5 +1,7 @@
 import { notFound } from 'next/navigation';
-import { getProjectBySlug, getAllProjectSlugs, getNFTProjectBySlug, getAllNFTProjectSlugs } from '@/lib/projectData';
+import { getProjectBySlug, getAllProjectSlugs, getNFTProjectBySlug, getAllNFTProjectSlugs, ProjectData, NFTProjectData } from '@/lib/projectData';
+import { getAdminFirestore } from '@/lib/firebaseAdmin';
+import { adaptProject } from '@/lib/projectAdapter';
 import ProjectPageClient from './ProjectPageClient';
 import NFTProjectPageClient from './NFTProjectPageClient';
 
@@ -21,8 +23,20 @@ export async function generateStaticParams() {
 
 export async function generateMetadata({ params }: ProjectPageProps) {
   const { projectname } = await params;
-  const project = getProjectBySlug(projectname);
-  const nftProject = getNFTProjectBySlug(projectname);
+  // Prefer Firestore
+  let project: ProjectData | null = null;
+  let nftProject: NFTProjectData | null = null;
+  try {
+    const db = getAdminFirestore();
+    const snap = await db.collection('projects').doc(projectname).get();
+    const nsnap = await db.collection('nftProjects').doc(projectname).get();
+    if (snap.exists) project = adaptProject({ type: '3d', ...snap.data() }) as ProjectData;
+    if (nsnap.exists) nftProject = adaptProject({ type: 'nft', ...nsnap.data() }) as NFTProjectData;
+  } catch {}
+  if (!project && !nftProject) {
+    project = getProjectBySlug(projectname) ?? null;
+    nftProject = getNFTProjectBySlug(projectname) ?? null;
+  }
   
   const foundProject = project || nftProject;
   
@@ -40,8 +54,19 @@ export async function generateMetadata({ params }: ProjectPageProps) {
 
 export default async function ProjectPage({ params }: ProjectPageProps) {
   const { projectname } = await params;
-  const project = getProjectBySlug(projectname);
-  const nftProject = getNFTProjectBySlug(projectname);
+  let project: ProjectData | null = null;
+  let nftProject: NFTProjectData | null = null;
+  try {
+    const db = getAdminFirestore();
+    const snap = await db.collection('projects').doc(projectname).get();
+    const nsnap = await db.collection('nftProjects').doc(projectname).get();
+    if (snap.exists) project = adaptProject({ type: '3d', ...snap.data() }) as ProjectData;
+    if (nsnap.exists) nftProject = adaptProject({ type: 'nft', ...nsnap.data() }) as NFTProjectData;
+  } catch {}
+  if (!project && !nftProject) {
+    project = getProjectBySlug(projectname) ?? null;
+    nftProject = getNFTProjectBySlug(projectname) ?? null;
+  }
 
   if (!project && !nftProject) {
     notFound();

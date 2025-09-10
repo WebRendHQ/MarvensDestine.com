@@ -1,19 +1,36 @@
 import { google } from 'googleapis';
 
-// Google Calendar service setup
-const calendar = google.calendar('v3');
+function buildAuth() {
+  // Prefer full JSON to avoid newline escaping issues
+  const json = process.env.GOOGLE_SERVICE_ACCOUNT_KEY_JSON;
+  if (json) {
+    try {
+      const parsed = JSON.parse(json);
+      return new google.auth.GoogleAuth({
+        credentials: parsed,
+        scopes: ['https://www.googleapis.com/auth/calendar'],
+      });
+    } catch {
+      throw new Error('Invalid GOOGLE_SERVICE_ACCOUNT_KEY_JSON');
+    }
+  }
+  const clientEmail = process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL;
+  const privateKey = process.env.GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY?.replace(/\\n/g, '\n');
+  if (!clientEmail || !privateKey) {
+    throw new Error('Missing GOOGLE_SERVICE_ACCOUNT_EMAIL or GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY');
+  }
+  return new google.auth.GoogleAuth({
+    credentials: {
+      client_email: clientEmail,
+      private_key: privateKey,
+    },
+    scopes: ['https://www.googleapis.com/auth/calendar'],
+  });
+}
 
-// Service account authentication
-const auth = new google.auth.GoogleAuth({
-  // You'll need to add your service account key file path or credentials
-  // keyFile: './path/to/your/service-account-key.json',
-  // OR use environment variables for the credentials
-  credentials: {
-    client_email: process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL,
-    private_key: process.env.GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY?.replace(/\\n/g, '\n'),
-  },
-  scopes: ['https://www.googleapis.com/auth/calendar'],
-});
+// Google Calendar service setup with auth (lazy to surface clear errors early)
+const auth = buildAuth();
+const calendar = google.calendar({ version: 'v3', auth });
 
 export interface CalendarEvent {
   summary: string;
@@ -31,12 +48,11 @@ export interface CalendarEvent {
 
 export async function createCalendarEvent(eventDetails: CalendarEvent) {
   try {
-    const authClient = await auth.getClient();
-    
+    // Auth is attached to the calendar client during initialization
     // Create event in founder@blenderbin.com's calendar
+    const calendarId = process.env.GOOGLE_CALENDAR_ID || 'founder@blenderbin.com';
     const event = await calendar.events.insert({
-      auth: authClient,
-      calendarId: 'founder@blenderbin.com',
+      calendarId,
       requestBody: {
         summary: eventDetails.summary,
         description: eventDetails.description,
@@ -50,8 +66,6 @@ export async function createCalendarEvent(eventDetails: CalendarEvent) {
             { method: 'popup', minutes: 30 },     // 30 minutes before
           ],
         },
-        // Automatically send invitations
-        sendUpdates: 'all' as const,
         // Create Google Meet link
         conferenceData: {
           createRequest: {
@@ -64,6 +78,8 @@ export async function createCalendarEvent(eventDetails: CalendarEvent) {
       },
       // Required to create Google Meet links
       conferenceDataVersion: 1,
+      // Automatically send invitations
+      sendUpdates: 'all',
     });
 
     return {
@@ -83,11 +99,10 @@ export async function createCalendarEvent(eventDetails: CalendarEvent) {
 
 export async function updateCalendarEvent(eventId: string, eventDetails: CalendarEvent) {
   try {
-    const authClient = await auth.getClient();
-    
+    // Auth is attached to the calendar client during initialization
+    const calendarId = process.env.GOOGLE_CALENDAR_ID || 'founder@blenderbin.com';
     const event = await calendar.events.update({
-      auth: authClient,
-      calendarId: 'founder@blenderbin.com',
+      calendarId,
       eventId: eventId,
       requestBody: {
         summary: eventDetails.summary,
@@ -102,8 +117,8 @@ export async function updateCalendarEvent(eventId: string, eventDetails: Calenda
             { method: 'popup', minutes: 30 },
           ],
         },
-        sendUpdates: 'all' as const,
       },
+      sendUpdates: 'all',
     });
 
     return {

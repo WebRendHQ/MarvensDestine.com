@@ -756,13 +756,13 @@
 /* Container for controls centered at the bottom */
 .controlsContainer {
   position: absolute;
-  bottom: 30px;
+  bottom: 100px;
   left: 0;
   width: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 10;
+  z-index: 40;
   pointer-events: all;
 }
 
@@ -921,7 +921,7 @@
 /* Responsive adjustments */
 @media (max-width: 768px) {
   .controlsContainer {
-    bottom: 20px;
+    bottom: 90px;
   }
   
   .controls {
@@ -1019,6 +1019,10 @@
   .toggleSlider.nftPosition {
     transform: translateX(44px);
   }
+  /* Align bottom-nav slider for 40px button size */
+  .toggleSlider.navPos1 { transform: translateX(40px); }
+  .toggleSlider.navPos2 { transform: translateX(80px); }
+  .toggleSlider.navPos3 { transform: translateX(120px); }
 
   .nftStats {
     grid-template-columns: repeat(2, 1fr);
@@ -1308,6 +1312,7 @@ a.secondary {
   height: 48px;
 }
 
+/* Active state for bottom nav buttons to match toggle */
 .toggleButton.active {
   color: rgba(0, 0, 0, 0.85);
 }
@@ -1336,6 +1341,57 @@ a.secondary {
   transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
+/* Tooltip for nav buttons (uses aria-label text) */
+.toggleButton::after {
+  content: attr(aria-label);
+  position: absolute;
+  left: 50%;
+  bottom: 58px;
+  transform: translateX(-50%) translateY(8px);
+  opacity: 0;
+  pointer-events: none;
+  white-space: nowrap;
+  padding: 6px 10px;
+  font-size: 11px;
+  line-height: 1;
+  color: rgba(255, 255, 255, 0.95);
+  background: rgba(16, 18, 20, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 10px;
+  box-shadow:
+    0 8px 24px rgba(0, 0, 0, 0.35),
+    0 1px 0 rgba(255, 255, 255, 0.05);
+  z-index: 60;
+  transition: opacity 0.18s ease, transform 0.18s ease;
+}
+
+.toggleButton::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: 50px;
+  transform: translateX(-50%) translateY(8px);
+  opacity: 0;
+  width: 10px;
+  height: 10px;
+  background: rgba(16, 18, 20, 0.9);
+  border-left: 1px solid rgba(255, 255, 255, 0.12);
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+  transform-origin: center;
+  rotate: 45deg;
+  border-radius: 2px;
+  z-index: 59;
+  transition: opacity 0.18s ease, transform 0.18s ease;
+}
+
+.toggleButton:hover::after,
+.toggleButton:focus-visible::after,
+.toggleButton:hover::before,
+.toggleButton:focus-visible::before {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
 .toggleSlider {
   position: absolute;
   top: 6px;
@@ -1353,6 +1409,23 @@ a.secondary {
 
 .toggleSlider.nftPosition {
   transform: translateX(54px);
+}
+
+/* Bottom nav slider positions (3 buttons: portfolio, discovery, email) */
+.toggleSlider.navPos0 {
+  transform: translateX(0);
+}
+
+.toggleSlider.navPos1 {
+  transform: translateX(48px);
+}
+
+.toggleSlider.navPos2 {
+  transform: translateX(96px);
+}
+
+.toggleSlider.navPos3 {
+  transform: translateX(144px);
 }
 
 /* Social Media Island - Top Right */
@@ -1376,61 +1449,9 @@ a.secondary {
   box-shadow: 
     0 8px 32px rgba(0, 0, 0, 0.3),
     0 1px 0 rgba(255, 255, 255, 0.05);
-  transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
-.socialsIsland:hover {
-  transform: translateY(-2px);
-  box-shadow: 
-    0 12px 40px rgba(0, 0, 0, 0.4),
-    0 2px 0 rgba(255, 255, 255, 0.08);
-  border-color: rgba(255, 255, 255, 0.2);
-}
-
-.socialButton {
-  width: 36px;
-  height: 36px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: rgba(255, 255, 255, 0.08);
-  border-radius: 10px;
-  text-decoration: none;
-  transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-  position: relative;
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.05);
-}
-
-.socialButton:hover {
-  background: rgba(255, 255, 255, 0.15);
-  transform: scale(1.05);
-  border-color: rgba(255, 255, 255, 0.15);
-  box-shadow: 
-    0 4px 12px rgba(0, 0, 0, 0.2),
-    inset 0 1px 0 rgba(255, 255, 255, 0.1);
-}
-
-.socialButton:active {
-  transform: scale(0.98);
-  background: rgba(255, 255, 255, 0.1);
-  transition: all 0.15s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-}
-
-.socialIcon {
-  color: rgba(255, 255, 255, 0.8);
-  font-size: 14px;
-  font-weight: 600;
-  font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Roboto Mono', monospace;
-  text-transform: lowercase;
-  letter-spacing: -0.5px;
-  transition: color 0.3s ease;
-}
-
-.socialButton:hover .socialIcon {
-  color: rgba(255, 255, 255, 0.95);
-}
+/* Social buttons now reuse toggleButton + toggleIcon for identical behavior */
 
 /* LinkedIn specific styling */
 .socialButton:nth-child(1):hover {
@@ -1502,6 +1523,10 @@ a.secondary {
   .toggleSlider.nftPosition {
     transform: translateX(39px);
   }
+  /* Align bottom-nav slider for 36px button size */
+  .toggleSlider.navPos1 { transform: translateX(36px); }
+  .toggleSlider.navPos2 { transform: translateX(72px); }
+  .toggleSlider.navPos3 { transform: translateX(108px); }
 
   .nftStats {
     grid-template-columns: 1fr;
@@ -1518,5 +1543,58 @@ a.secondary {
 
   .statValue {
     font-size: 13px;
+  }
+}
+
+/* Page transition wrapper for global fade/blur */
+.pageStack {
+  position: relative;
+}
+
+.pageLayer {
+  position: relative;
+  will-change: opacity, filter;
+  transition: opacity 0.2s ease, filter 0.2s ease;
+}
+
+.pageEnterInit {
+  opacity: 0;
+  filter: blur(8px);
+  position: absolute;
+  inset: 0;
+}
+
+.pageEnterActive {
+  opacity: 1;
+  filter: none;
+  position: absolute;
+  inset: 0;
+}
+
+.pageExitActive {
+  opacity: 0;
+  filter: blur(8px);
+}
+
+/* Bottom navbar styled like projectToggle */
+.bottomNav {
+  position: fixed;
+  bottom: 30px;
+  left: 0;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  z-index: 30;
+  pointer-events: none;
+}
+
+.bottomNav .projectToggle {
+  pointer-events: all;
+  gap: 0;
+}
+
+@media (max-width: 768px) {
+  .bottomNav {
+    bottom: 20px;
   }
 }
